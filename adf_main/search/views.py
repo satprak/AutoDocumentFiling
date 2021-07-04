@@ -14,6 +14,29 @@ import datetime
 #this change is made de bbyy  mmee
 #new change done by me
 
+from django.http import JsonResponse
+from .models import Product
+import json
+
+def autocomplete(request):
+    print(request.GET)
+    print(type(request.GET))
+    myDict = dict(request.GET.lists())
+    print(myDict)
+    str = myDict['product'][0]
+    lst = str.split(',')
+    print(lst)
+    if 'term' in request.GET:
+
+        #print(term)
+        #qs = Product.objects.filter(title__icontains=request.GET.get('term'))
+        #titles = list()
+        #for product in qs:
+        #    titles.append(product.title)
+        titles = ['piyush', 'python','hello','satyam','suraj','priyanshu','prachi']
+        return JsonResponse(titles, safe=False)
+    return render(request, 'search/home.html')
+
 def text_search(key_string,search_in,dic):
     
     temp = '*'
