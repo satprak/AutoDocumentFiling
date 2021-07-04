@@ -1,3 +1,4 @@
+# jknejk
 """
 Django settings for adf_frontend project.
 
