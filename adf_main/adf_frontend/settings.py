@@ -1,5 +1,6 @@
 # jknejk
 # this change is made by satyam
+# this change is made by satyam-adf
 """
 Django settings for adf_frontend project.
 
