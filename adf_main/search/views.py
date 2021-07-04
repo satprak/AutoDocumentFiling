@@ -21,20 +21,30 @@ import json
 def autocomplete(request):
     print(request.GET)
     print(type(request.GET))
-    myDict = dict(request.GET.lists())
-    print(myDict)
-    str = myDict['product'][0]
-    lst = str.split(',')
-    print(lst)
+    # myDict = dict(request.GET.lists())
+    # print(myDict)
+    # str = myDict['product'][0]
+    # lst = str.split(',')
+    # print(lst)
     if 'term' in request.GET:
-
-        #print(term)
+        text = request.GET['term']
+        print(text)
+        lenth=len(text)
+        print(lenth)
         #qs = Product.objects.filter(title__icontains=request.GET.get('term'))
         #titles = list()
         #for product in qs:
         #    titles.append(product.title)
-        titles = ['piyush', 'python','hello','satyam','suraj','priyanshu','prachi']
-        return JsonResponse(titles, safe=False)
+        client =  MongoClient('mongodb://localhost:27017/')
+        list1 = list(client.adf_main.adf_list.find())
+        list2= list1[0]['list']
+        list3=[]
+        for x in list2:
+            if len(x)>=lenth:
+                if x[:lenth]==text:
+                    list3.append(x)
+        return JsonResponse(list3, safe=False)
+
     return render(request, 'search/home.html')
 
 def text_search(key_string,search_in,dic):

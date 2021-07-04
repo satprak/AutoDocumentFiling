@@ -592,7 +592,8 @@ def Update(request):
     #context={}
     if request.method == 'POST':
         #BASE_DIR = "G:/Users/hp/Downloads/project2/project2/adf_main/media/"
-        BASE_DIR = "G:/django_projects/git_satyam_adf/AutoDocumentFiling/adf_main/media/"
+        # BASE_DIR = "G:/django_projects/git_satyam_adf/AutoDocumentFiling/adf_main/media/"
+        BASE_DIR = "C:/Users/Priyanshu Agarwal/projects/AutoDocumentFiling/adf_main/media/"
         list=os.listdir(BASE_DIR)
         new_list = []
         for x in list:
