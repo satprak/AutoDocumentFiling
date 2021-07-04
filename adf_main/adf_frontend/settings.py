@@ -1,5 +1,10 @@
 # jknejk
+<<<<<<< HEAD
 # hello from piyush
+=======
+# this change is made by satyam
+# this change is made by satyam-adf
+>>>>>>> 7042de025afa4212fe37e4d7027bb0ecdc4f7e85
 """
 Django settings for adf_frontend project.
 
@@ -22,7 +27,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'syvjpg(n7mdg(e3qz4%(z&%k&)+t@m)kt0c80@1827ppcew&-3'
+SECRET_KEY = ''
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
