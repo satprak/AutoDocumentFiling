@@ -4,7 +4,11 @@
 =======
 # this change is made by satyam
 # this change is made by satyam-adf
+<<<<<<< HEAD
 >>>>>>> 7042de025afa4212fe37e4d7027bb0ecdc4f7e85
+=======
+# this change is made by satyam-adf
+>>>>>>> 85aafd637e0059e41046fe12ff195737f6d43b2b
 """
 Django settings for adf_frontend project.
 
