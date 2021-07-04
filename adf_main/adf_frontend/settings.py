@@ -1,4 +1,5 @@
 # jknejk
+# this change is made by satyam
 """
 Django settings for adf_frontend project.
 
