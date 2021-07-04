@@ -1,10 +1,6 @@
  #### -------------------------  #### ------ Checking if pull works --------#### --------------##################
 
-<<<<<<< HEAD
 # I just wnated to change something
-=======
-# satyam madarchod h 
->>>>>>> 1e34961e994829a8c51b4aabb0f49e69b152dbf1
 import io
 import os
 import sys 
