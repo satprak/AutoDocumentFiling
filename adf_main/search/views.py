@@ -19,22 +19,21 @@ from .models import Product
 import json
 
 def autocomplete(request):
-    print(request.GET)
-    print(type(request.GET))
-    # myDict = dict(request.GET.lists())
-    # print(myDict)
-    # str = myDict['product'][0]
-    # lst = str.split(',')
-    # print(lst)
     if 'term' in request.GET:
-        text = request.GET['term']
+        t1 = request.GET['term']
+        t2=[]
+        for i in range(len(t1)-1,-1,-1):
+            if(t1[i]!=' ' and t1[i]!='+' and t1[i]!='-' and t1[i]!='|'):
+                t2.append(t1[i])
+            else:
+                break
+        text = "".join((x for x in t2))
+        text = text[::-1]
+        text= text.lower()
         print(text)
         lenth=len(text)
-        print(lenth)
-        #qs = Product.objects.filter(title__icontains=request.GET.get('term'))
-        #titles = list()
-        #for product in qs:
-        #    titles.append(product.title)
+        if not lenth:
+            return JsonResponse([], safe=False)
         client =  MongoClient('mongodb://localhost:27017/')
         list1 = list(client.adf_main.adf_list.find())
         list2= list1[0]['list']
