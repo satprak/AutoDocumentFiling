@@ -20,22 +20,12 @@ import json
 
 def autocomplete(request):
     print(request.GET)
-<<<<<<< HEAD
-    if 'term' in request.GET:
-        #print(term)
-=======
     print(type(request.GET))
-    # myDict = dict(request.GET.lists())
-    # print(myDict)
-    # str = myDict['product'][0]
-    # lst = str.split(',')
-    # print(lst)
     if 'term' in request.GET:
         text = request.GET['term']
         print(text)
         lenth=len(text)
         print(lenth)
->>>>>>> acd87184d93e6aa280c8d3e3d9bef2235c41a06f
         #qs = Product.objects.filter(title__icontains=request.GET.get('term'))
         #titles = list()
         #for product in qs:
