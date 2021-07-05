@@ -11,7 +11,7 @@
 <body>
 <form>
     <label for="product">Product</label>
-    <input type="text" name="product" id="product" autocomplete="off">
+    <input type="text" name="product" id="product" >
 </form>
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -20,7 +20,9 @@
         $("#product").autocomplete({
 
             source: "{% url 'autocomplete' %}",
+            //source: ['piyush', 'python','hello','satyam','priyanshu','prachi']
             //source: ['python','python','piyush','piyush','piyush', 'python','python','python','hello','satyam','suraj','priyanshu','prachi'],
+           
         });
     });
 </script>
