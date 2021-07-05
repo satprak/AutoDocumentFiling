@@ -23,6 +23,8 @@ def autocomplete(request):
     print(type(request.GET))
     if 'term' in request.GET:
         text = request.GET['term']
+        temp = text.split()
+        text = temp[-1]
         print(text)
         lenth=len(text)
         print(lenth)
