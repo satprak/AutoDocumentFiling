@@ -18,34 +18,8 @@ from django.http import JsonResponse
 from .models import Product
 import json
 def autocomplete(request):
-<<<<<<< HEAD
-    print(request.GET)
-    print(type(request.GET))
-||||||| merged common ancestors
-<<<<<<<<< Temporary merge branch 1
-||||||||| acd8718
-    print(request.GET)
-    print(type(request.GET))
-    # myDict = dict(request.GET.lists())
-    # print(myDict)
-    # str = myDict['product'][0]
-    # lst = str.split(',')
-    # print(lst)
-=========
-    print(request.GET)
-    print(type(request.GET))
->>>>>>>>> Temporary merge branch 2
-=======
->>>>>>> aa19b6965f59ffddc6185256159362d66bbd6c26
     if 'term' in request.GET:
-<<<<<<< HEAD
         text = request.GET['term']
-        # temp = text.split()
-        # text = temp[-1]
-||||||| merged common ancestors
-<<<<<<<<< Temporary merge branch 1
-=======
->>>>>>> aa19b6965f59ffddc6185256159362d66bbd6c26
         t1 = request.GET['term']
         t1 = t1[::-1]
         text = ""
@@ -54,15 +28,7 @@ def autocomplete(request):
                 break
             else:
                 text = i+text
-        # text = t1.split(",")[-1]
         t2=[]
-        # for i in range(len(t1)-1,-1,-1):
-        #     if(t1[i]!=' '):
-        #         t2.append(t1[i])
-        #     else:
-        #         break
-        # text = "".join((x for x in t2))
-        # text = text[::-1]
         text= text.lower()
         print(text)
         length=len(text)
