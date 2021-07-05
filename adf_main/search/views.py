@@ -24,6 +24,7 @@ def autocomplete(request):
         text = request.GET['term']
         temp = text.split()
         text = temp[-1]
+        length = len(text)
         print(text)
         #qs = Product.objects.filter(title__icontains=request.GET.get('term'))
         #titles = list()
