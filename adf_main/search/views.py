@@ -17,7 +17,6 @@ import datetime
 from django.http import JsonResponse
 from .models import Product
 import json
-
 def autocomplete(request):
     print(request.GET)
     print(type(request.GET))
@@ -26,11 +25,17 @@ def autocomplete(request):
     # str = myDict['product'][0]
     # lst = str.split(',')
     # print(lst)
+    
     if 'term' in request.GET:
         text = request.GET['term']
+        
+        tmp = text.split()
+        # print(text[c:])
+        # print(length)
+        text = tmp[-1]
+        
+        length=len(text)
         print(text)
-        lenth=len(text)
-        print(lenth)
         #qs = Product.objects.filter(title__icontains=request.GET.get('term'))
         #titles = list()
         #for product in qs:
@@ -40,8 +45,8 @@ def autocomplete(request):
         list2= list1[0]['list']
         list3=[]
         for x in list2:
-            if len(x)>=lenth:
-                if x[:lenth]==text:
+            if len(x)>=length:
+                if x[:length]==text:
                     list3.append(x)
         return JsonResponse(list3, safe=False)
 
