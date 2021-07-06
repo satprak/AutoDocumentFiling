@@ -1,5 +1,6 @@
  #### -------------------------  #### ------ Checking if pull works --------#### --------------##################
-
+# saty mc
+# piyush kon h
 # I just wnated to change something
 import io
 import os
@@ -58,9 +59,28 @@ def comp(s):
 def script(url, current_folder, name,keyword_front,doctype,size):
     #print("Script working ??")
     client = MongoClient('mongodb://localhost:27017/')
-    def extract_email_info(text):
+
+    def remove_stopwards(text):
+        from nltk.corpus import stopwords
+        from nltk.tokenize import word_tokenize
+        
+        example_sent = text 
+        stop_words = set(stopwords.words('english'))
+        word_tokens = word_tokenize(example_sent)
+        
+        filtered_sentence = [w for w in word_tokens if not w.lower() in stop_words]
+        
+        filtered_sentence = []
+        
+        for w in word_tokens:
+            if w not in stop_words:
+                filtered_sentence.append(w)
+        return filtered_sentence
+
+    def extract_email_info(text):        
         fh = text
         mydict = {}
+
         mydict["Size"] = size
         # TO: extraction
         index_num = fh.find('To:')
@@ -74,7 +94,18 @@ def script(url, current_folder, name,keyword_front,doctype,size):
             y = x[0][4:]
             res = y.replace(", ", " ").split()
             mydict['To'] = res
-
+            client.adf_main.adf_list.update(
+                {"doc_type":"Email"},
+                {
+                    "$push": {
+                    "To": {
+                        "$each": res,
+                        "$position": -1
+                    }
+                }
+                }
+            ) 
+            
         # #  From:
         match = re.findall("Forwarded message.*", fh)
         #print(match)
@@ -88,7 +119,7 @@ def script(url, current_folder, name,keyword_front,doctype,size):
         # myList = [value for value in chunks if value != valueToBeRemoved]
         # from_list.append(myList[2])
         #print(from_list)
-        match = re.findall("<\w\S*@*.\w>", fh)
+        match = re.findall("<(\w\S*@*.\w)>", fh)
         # match[1]
         from_list.extend(match)
         
@@ -108,7 +139,17 @@ def script(url, current_folder, name,keyword_front,doctype,size):
             if(temp):
                 from_list.remove(item)
         mydict['From'] = from_list
-
+        client.adf_main.adf_list.update(
+                {"doc_type":"Email"},
+                {
+                    "$push": {
+                    "From": {
+                        "$each": from_list,
+                        "$position": -1
+                    }
+                }
+                }
+        )
         # # Recieved timestamp
         temp = re.findall('(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun),[\s-](?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[\s-]\d{2,4},[\s-]\d{4}', fh)
         date = datetime.datetime.strptime(temp[0], '%a, %b %d, %Y')
@@ -161,6 +202,19 @@ def script(url, current_folder, name,keyword_front,doctype,size):
         body_str = " ".join(body_str.split())
         mydict['Body'] = body_str
         
+        
+        body_list_words = remove_stopwards(body_str)
+        client.adf_main.adf_list.update(
+                {"doc_type":"Email"},
+                {
+                    "$push": {
+                    "Body": {
+                        "$each": body_list_words,
+                        "$position": -1
+                    }
+                }
+                }
+        )
         return mydict
 
     def extract_header_para_keywords(file_path):
@@ -585,12 +639,29 @@ def script(url, current_folder, name,keyword_front,doctype,size):
     header_para_key = extract_header_para_keywords(file_path)
     convert(file_path,name,doc_type,header_para_key)
 
-
+def remove_stopwards(text):
+    from nltk.corpus import stopwords
+    from nltk.tokenize import word_tokenize
+    
+    example_sent = text 
+    stop_words = set(stopwords.words('english'))
+    word_tokens = word_tokenize(example_sent)
+    
+    filtered_sentence = [w for w in word_tokens if not w.lower() in stop_words]
+    
+    filtered_sentence = []
+    
+    for w in word_tokens:
+        if w not in stop_words:
+            filtered_sentence.append(w)
+    return filtered_sentence
 
 def Update(request):
     #context={}
     if request.method == 'POST':
-        BASE_DIR = "C:/Users/hp/Downloads/project2/project2/adf_main/media/"
+        BASE_DIR = "c:/Users/hp/Downloads/project2/project2/adf_main/media/"
+        # BASE_DIR = "G:/django_projects/git_satyam_adf/AutoDocumentFiling/adf_main/media/"
+        # BASE_DIR = "C:/Users/Priyanshu Agarwal/projects/AutoDocumentFiling/adf_main/media/"
         list=os.listdir(BASE_DIR)
         new_list = []
         for x in list:
@@ -689,6 +760,23 @@ def Update(request):
                     mydict1['issuer'] = 'Amazon'
                     mydict1['keywords'] = keyword_front
                     mydict1['Size'] = size
+                    keyword_list = keyword_front.split()
+                    content_test_list = remove_stopwards(mydict1["content_text"])
+                    client.adf_main.adf_list.update(
+                        {"doc_type":"Invoice"},
+                        {
+                            "$push": {
+                                "keywords": {
+                                    "$each": keyword_list,
+                                    "$position": -1
+                                },
+                                "content_text": {
+                                    "$each": content_test_list,
+                                    "$position": -1
+                                }
+                            }
+                        }
+                    )
 
                 elif request.POST["Issuer"] == "Flipkart":
                     mydict1 = {}
@@ -700,6 +788,24 @@ def Update(request):
                     mydict1['file_path'] = current_folder
                     mydict1['content_text'] = " ".join(fh.split())
                     mydict1['keywords'] = keyword_front
+                    mydict1['keywords'] = keyword_front
+                    keyword_list = keyword_front.split()
+                    content_test_list = remove_stopwards(mydict1["content_text"])
+                    client.adf_main.adf_list.update(
+                        {"doc_type":"Invoice"},
+                        {
+                            "$push": {
+                                "keywords": {
+                                    "$each": keyword_list,
+                                    "$position": -1
+                                },
+                                "content_text": {
+                                    "$each": content_test_list,
+                                    "$position": -1
+                                }
+                            }
+                        }
+                    )
                     mydict1['Size'] = size
 
                 elif request.POST["Issuer"] == "Oyo":
@@ -712,6 +818,23 @@ def Update(request):
                     mydict1['file_path'] = current_folder
                     mydict1['content_text'] = " ".join(fh.split())
                     mydict1['keywords'] = keyword_front
+                    keyword_list = keyword_front.split()
+                    content_test_list = remove_stopwards(mydict1["content_text"])
+                    client.adf_main.adf_list.update(
+                        {"doc_type":"Invoice"},
+                        {
+                            "$push": {
+                                "keywords": {
+                                    "$each": keyword_list,
+                                    "$position": -1
+                                },
+                                "content_text": {
+                                    "$each": content_test_list,
+                                    "$position": -1
+                                }
+                            }
+                        }
+                    )
                     mydict1['Size'] = size
 
                 # print(mydict)

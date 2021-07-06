@@ -1,3 +1,7 @@
+# jknejk
+# this change is made by satyam
+# this change is made by satyam-adf
+# this change is made by satyam-adf
 """
 Django settings for adf_frontend project.
 
@@ -145,7 +149,7 @@ AUTHENTICATION_BACKEND = ['users.EmailBackEnd.EmailBackEnd']
 EMAIL_HOST="smtp.gmail.com"
 EMAIL_PORT=587
 EMAIL_HOST_USER="satyamprakashiitk2022@gmail.com"# put host email id
-EMAIL_HOST_PASSWORD="Saty123@"
+EMAIL_HOST_PASSWORD=""
 EMAIL_USE_TLS=True
 DEFAULT_FROM_EMAIL="ADF Management System <satyamprakashiitk2022@gmail.com>"# put host email id
 
