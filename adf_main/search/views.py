@@ -19,6 +19,7 @@ from .models import Product
 import json
 def autocomplete(request):
     if 'term' in request.GET:
+        text = request.GET['term']
         t1 = request.GET['term']
         t1 = t1[::-1]
         text = ""
@@ -27,15 +28,7 @@ def autocomplete(request):
                 break
             else:
                 text = i+text
-        # text = t1.split(",")[-1]
         t2=[]
-        # for i in range(len(t1)-1,-1,-1):
-        #     if(t1[i]!=' '):
-        #         t2.append(t1[i])
-        #     else:
-        #         break
-        # text = "".join((x for x in t2))
-        # text = text[::-1]
         text= text.lower()
         print(text)
         length=len(text)
