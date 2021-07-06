@@ -23,7 +23,7 @@ def autocomplete(request):
         t1 = t1[::-1]
         text = ""
         for i in t1:
-            if i=='+' or i=='-' or i=='|':
+            if i=='+' or i=='-' or i=='|' or i==' ':
                 break
             else:
                 text = i+text
@@ -36,6 +36,11 @@ def autocomplete(request):
         #         break
         # text = "".join((x for x in t2))
         # text = text[::-1]
+        # l = {'satyam':5, "priyanshu":2, "suraj":5}
+        # ll = {}
+        # for x in l:
+        #     dic = 
+
         text= text.lower()
         print(text)
         length=len(text)
