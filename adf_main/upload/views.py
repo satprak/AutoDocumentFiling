@@ -586,14 +586,29 @@ def script(url, current_folder, name,keyword_front,doctype,size):
     header_para_key = extract_header_para_keywords(file_path)
     convert(file_path,name,doc_type,header_para_key)
 
-
+def remove_stopwards(text):
+    from nltk.corpus import stopwords
+    from nltk.tokenize import word_tokenize
+    
+    example_sent = text 
+    stop_words = set(stopwords.words('english'))
+    word_tokens = word_tokenize(example_sent)
+    
+    filtered_sentence = [w for w in word_tokens if not w.lower() in stop_words]
+    
+    filtered_sentence = []
+    
+    for w in word_tokens:
+        if w not in stop_words:
+            filtered_sentence.append(w)
+    return filtered_sentence
 
 def Update(request):
     #context={}
     if request.method == 'POST':
-        #BASE_DIR = "G:/Users/hp/Downloads/project2/project2/adf_main/media/"
+        BASE_DIR = "c:/Users/hp/Downloads/project2/project2/adf_main/media/"
         # BASE_DIR = "G:/django_projects/git_satyam_adf/AutoDocumentFiling/adf_main/media/"
-        BASE_DIR = "C:/Users/Priyanshu Agarwal/projects/AutoDocumentFiling/adf_main/media/"
+        # BASE_DIR = "C:/Users/Priyanshu Agarwal/projects/AutoDocumentFiling/adf_main/media/"
         list=os.listdir(BASE_DIR)
         new_list = []
         for x in list:
@@ -692,6 +707,23 @@ def Update(request):
                     mydict1['issuer'] = 'Amazon'
                     mydict1['keywords'] = keyword_front
                     mydict1['Size'] = size
+                    keyword_list = keyword_front.split()
+                    content_test_list = remove_stopwards(mydict1["content_text"])
+                    client.adf_main.adf_list.update(
+                        {"doc_type":"Invoice"},
+                        {
+                            "$push": {
+                                "keywords": {
+                                    "$each": keyword_list,
+                                    "$position": -1
+                                },
+                                "content_text": {
+                                    "$each": content_test_list,
+                                    "$position": -1
+                                }
+                            }
+                        }
+                    )
 
                 elif request.POST["Issuer"] == "Flipkart":
                     mydict1 = {}
@@ -715,6 +747,23 @@ def Update(request):
                     mydict1['file_path'] = current_folder
                     mydict1['content_text'] = " ".join(fh.split())
                     mydict1['keywords'] = keyword_front
+                    keyword_list = keyword_front.split()
+                    content_test_list = remove_stopwards(mydict1["content_text"])
+                    client.adf_main.adf_list.update(
+                        {"doc_type":"Invoice"},
+                        {
+                            "$push": {
+                                "keywords": {
+                                    "$each": keyword_list,
+                                    "$position": -1
+                                },
+                                "content_text": {
+                                    "$each": content_test_list,
+                                    "$position": -1
+                                }
+                            }
+                        }
+                    )
                     mydict1['Size'] = size
 
                 # print(mydict)
