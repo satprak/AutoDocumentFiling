@@ -788,6 +788,24 @@ def Update(request):
                     mydict1['file_path'] = current_folder
                     mydict1['content_text'] = " ".join(fh.split())
                     mydict1['keywords'] = keyword_front
+                    mydict1['keywords'] = keyword_front
+                    keyword_list = keyword_front.split()
+                    content_test_list = remove_stopwards(mydict1["content_text"])
+                    client.adf_main.adf_list.update(
+                        {"doc_type":"Invoice"},
+                        {
+                            "$push": {
+                                "keywords": {
+                                    "$each": keyword_list,
+                                    "$position": -1
+                                },
+                                "content_text": {
+                                    "$each": content_test_list,
+                                    "$position": -1
+                                }
+                            }
+                        }
+                    )
                     mydict1['Size'] = size
 
                 elif request.POST["Issuer"] == "Oyo":
