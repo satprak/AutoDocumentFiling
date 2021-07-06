@@ -17,6 +17,12 @@ import django
 import numpy as np
 import datetime
 
+# nltk.download('punkt')
+# nltk.download('averaged_perceptron_tagger')
+# nltk.download('maxent_ne_chunker')
+# nltk.download('words')
+# nltk.download('stopwords')
+# nltk.download('wordnet')
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
