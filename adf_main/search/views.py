@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from pymongo import MongoClient
 import datetime
-
+# suraj mc lodu
 # saty
 #hhuhedhuihui
 # this is my second change for git push
@@ -19,6 +19,7 @@ from .models import Product
 import json
 def autocomplete(request):
     if 'term' in request.GET:
+        text = request.GET['term']
         t1 = request.GET['term']
         t1 = t1[::-1]
         text = ""
@@ -27,8 +28,8 @@ def autocomplete(request):
                 break
             else:
                 text = i+text
-        # text = t1.split(",")[-1]
         t2=[]
+        client =  MongoClient('mongodb://localhost:27017/')
         # for i in range(len(t1)-1,-1,-1):
         #     if(t1[i]!=' '):
         #         t2.append(t1[i])
@@ -36,10 +37,16 @@ def autocomplete(request):
         #         break
         # text = "".join((x for x in t2))
         # text = text[::-1]
-        # l = {'satyam':5, "priyanshu":2, "suraj":5}
-        # ll = {}
-        # for x in l:
-        #     dic = 
+        l = {'satyam':5, "priyanshu":2, "suraj":5}
+        search_in = 'new.word'#word = satyam
+        var = 'new.$.freq'
+        ll = {}
+        for x in l:
+            dic = client.adf_main.adf_list.update({'_id':1,search_in:x},{'$inc':{var:2}})
+            if dic[ "nMatched"]==0:
+                ll[x]=l[x]
+        for y in ll:
+            pass
 
         text= text.lower()
         print(text)

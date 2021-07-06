@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -18,20 +19,17 @@
 <!-- <script>
     $(function () {
         $("#product").autocomplete({
-
             source: "{% url 'autocomplete' %}",
-            //source: ['piyush', 'python','hello','satyam','priyanshu','prachi']
-            //source: ['python','python','piyush','piyush','piyush', 'python','python','python','hello','satyam','suraj','priyanshu','prachi'],
-           
         });
     });
 </script> -->
 <script>
-	$( function() {
-		function split( val ) {
-			return val.split(/,/ );
-		}
+    $( function() {
+    function split( val ) {
+        return val.split(/,/ );
+    }
 
+<<<<<<< HEAD
 		$( "#product" )
 			// don't navigate away from the field on tab when selecting an item
 			.on( "keydown", function( event ) {
@@ -63,12 +61,46 @@
                     console.log(typeof cur);
                     for(let i = 0;i<ui.item.value.length;i++){
                         cur=cur+ui.item.value[i];
+=======
+    $( "#product" )
+        // don't navigate away from the field on tab when selecting an item
+        .on( "keydown", function( event ) {
+            if ( event.keyCode === $.ui.keyCode.TAB &&
+                    $( this ).autocomplete( "instance" ).menu.active ) {
+                event.preventDefault();
+            }
+        })
+        .autocomplete({
+            minLength: 0,
+            source: "{% url 'autocomplete' %}",
+            focus: function() {
+                // prevent value inserted on focus
+                return false;
+            },
+            select: function( event, ui ) {
+                // var terms = split( this.value );
+                // console.log(this.value);
+                // console.log(typeof this.value)
+                var cur = this.value;
+                console.log(cur)
+                var index;
+                for(let i=cur.length-1;i>=0;i--){
+                    if(cur[i]=='+'||cur[i]=='-'||cur[i]=='|'){
+                        index=i;
+                        break;
+>>>>>>> c5c8db9894c8b61ff761834bd4a5fe9df8f8599c
                     }
-                    this.value = cur
-					return false;
-				}
-			});
-	} );
+                }
+                cur=cur.slice(0,index+1);
+                // console.log(typeof cur);
+                for(let i = 0;i<ui.item.value.length;i++){
+                    cur=cur+ui.item.value[i];
+                }
+                this.value = cur
+                return false;
+            }
+        });
+} );
 </script>
 </body>
 </html>
