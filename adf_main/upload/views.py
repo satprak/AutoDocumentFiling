@@ -185,6 +185,8 @@ def script(url, current_folder, name,keyword_front,doctype,size):
         attachments +=pdfs+docx+jpg+png+zips+txt+json+ics
         mydict['Attachments'] = attachments
 
+        counts = Counter(attachments)
+        add_words_database(counts,"Email","Attachments")
         # Body
         index_num = fh.find(temp[0])
         after_date = fh[index_num : ]
@@ -519,6 +521,11 @@ def script(url, current_folder, name,keyword_front,doctype,size):
 
     def convert(file_path, file_name,doc_type,header_para_key, pages=None,):
 
+        file_name_words = clean_text_suggestions(file_name)
+        file_name_words = pandas.Series(file_name_words.split()).value_counts()
+        file_name_words = file_name_words.to_dict()
+        add_words_database(file_name_words,"All","file_name")
+
         if(doc_type=="Email"):
             def convert(fname, pages=None):
                 if not pages: pagenums = set()
@@ -546,6 +553,11 @@ def script(url, current_folder, name,keyword_front,doctype,size):
             text = convert(file_path)
             content_text = " ".join(text.split())
             mydict = {"doc_type":"Email", "file_name": file_name, "file_path": current_folder,"content_text": content_text}
+            
+            full_text_email = clean_text_suggestions(content_text)
+            full_text_email = pandas.Series(full_text_email.split()).value_counts()
+            full_text_email = full_text_email.to_dict()
+            add_words_database(full_text_email,"All","full_text")
 
             header_lst = []
             sub_lst = []
@@ -566,6 +578,7 @@ def script(url, current_folder, name,keyword_front,doctype,size):
             keyword_lst.append(keyword_front)  
             counts = Counter(keyword_lst)
             add_words_database(counts,"Email","keywords")
+            add_words_database(counts,"All","keywords")
 
             mydict['headers'] = header_lst
             mydict['paragraphs'] = para
@@ -576,7 +589,7 @@ def script(url, current_folder, name,keyword_front,doctype,size):
             client.adf_main.adf_frontend.insert(mydict)
 
         else:
-
+            
             if not pages: pagenums = set()
             else:         pagenums = set(pages)
             manager = PDFResourceManager()
@@ -597,6 +610,12 @@ def script(url, current_folder, name,keyword_front,doctype,size):
                     text = output.getvalue()
                     content_text = " ".join(text.split())
                     mydict = {"doc_type":"Others", "file_name": file_name, "file_path": current_folder,"content_text": content_text, "page_number": page_no+1}
+                    
+                    full_text_all = clean_text_suggestions(content_text)
+                    full_text_all = pandas.Series(full_text_all.split()).value_counts()
+                    full_text_all = full_text_all.to_dict()
+                    add_words_database(full_text_all,"All","full_text")
+
                     temp_dict = header_para_key[page_no+1]
 
                     key = '<h>'
@@ -630,6 +649,7 @@ def script(url, current_folder, name,keyword_front,doctype,size):
  
                     counts = Counter(temp_dict['keywords'])
                     add_words_database(counts,"Others","keywords")
+                    add_words_database(counts,"All","keywords")
 
                     #print(mydict)
                     # inserts document in mongoDB database
@@ -709,6 +729,9 @@ def Update(request):
                     fh = fh + str(page.getText())
                 if request.POST['Issuer'] == "Amazon":
 
+                    company_lst = ["Amazon"]
+                    counts = Counter(company_lst)
+                    add_words_database(counts,"Invoice","Company")
                     # text = convert('text', filePDF, pages=None)
                     pagenums = set()
                     manager = PDFResourceManager()
@@ -736,6 +759,13 @@ def Update(request):
                     match = re.findall("Invoice Date :.*", text)
                     mydict1['doc_type'] = "Invoice"
                     mydict1['file_name'] = name
+
+                    # adding file name in suggestion database
+                    file_name_words = clean_text_suggestions(name)
+                    file_name_words = pandas.Series(file_name_words.split()).value_counts()
+                    file_name_words = file_name_words.to_dict()
+                    add_words_database(file_name_words,"All","file_name")
+
                     mydict1['file_path'] = current_folder
                     tt = match[0][15:21]+match[0][23:]
                     # tt = tt[:7]+tt[9:]
@@ -773,11 +803,17 @@ def Update(request):
                     full_text = pandas.Series(full_text.split()).value_counts()
                     full_text = full_text.to_dict()
                     add_words_database(full_text,"Invoice","full_text")
+                    add_words_database(full_text,"All","full_text")
 
                     counts = Counter(keyword_list)
-                    add_words_database(counts,"Email","keywords")
+                    add_words_database(counts,"Invoice","keywords")
+                    add_words_database(counts,"All","keywords")
 
                 elif request.POST["Issuer"] == "Flipkart":
+                    company_lst = ["Flipkart"]
+                    counts = Counter(company_lst)
+                    add_words_database(counts,"Invoice","Company")
+
                     mydict1 = {}
                     templates = read_templates('templates/upload/flipkart_template')
                     tmp = extract_data(url, templates=templates)
@@ -792,14 +828,20 @@ def Update(request):
 
                     counts = Counter(keyword_list)
                     add_words_database(counts,"Invoice","keywords")
+                    add_words_database(counts,"All","keywords")
 
                     full_text = clean_text_suggestions(mydict1["content_text"])
                     full_text = pandas.Series(full_text.split()).value_counts()
                     full_text = full_text.to_dict()
                     add_words_database(full_text,"Invoice","full_text")
+                    add_words_database(full_text,"All","full_text")
                     mydict1['Size'] = size
 
                 elif request.POST["Issuer"] == "Oyo":
+                    company_lst = ["Oyo"]
+                    counts = Counter(company_lst)
+                    add_words_database(counts,"Invoice","Company")
+
                     mydict1 = {}
                     templates = read_templates('templates/upload/oyo_template')
                     tmp = extract_data(url, templates=templates)
@@ -813,11 +855,14 @@ def Update(request):
 
                     counts = Counter(keyword_list)
                     add_words_database(counts,"Invoice","keywords")
+                    add_words_database(counts,"All","keywords")
 
                     full_text = clean_text_suggestions(mydict1["content_text"])
                     full_text = pandas.Series(full_text.split()).value_counts()
                     full_text = full_text.to_dict()
                     add_words_database(full_text,"Invoice","full_text")
+                    add_words_database(full_text,"All","full_text")
+
                     mydict1['Size'] = size
 
                 # print(mydict)
