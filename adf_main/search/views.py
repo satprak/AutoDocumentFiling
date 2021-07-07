@@ -37,16 +37,16 @@ def autocomplete(request):
         #         break
         # text = "".join((x for x in t2))
         # text = text[::-1]
-        l = {'satyam':5, "priyanshu":2, "suraj":5}
-        search_in = 'new.word'#word = satyam
-        var = 'new.$.freq'
-        ll = {}
-        for x in l:
-            dic = client.adf_main.adf_list.update({'_id':1,search_in:x},{'$inc':{var:2}})
-            if dic[ "nMatched"]==0:
-                ll[x]=l[x]
-        for y in ll:
-            pass
+        # l = {'satyam':5, "priyanshu":2, "suraj":5}
+        # search_in = 'new.word'#word = satyam
+        # var = 'new.$.freq'
+        # ll = {}
+        # for x in l:
+        #     dic = client.adf_main.adf_list.update({'_id':1,search_in:x},{'$inc':{var:2}})
+        #     if dic[ "nMatched"]==0:
+        #         ll[x]=l[x]
+        # for y in ll:
+        #     pass
 
         text= text.lower()
         print(text)

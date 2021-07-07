@@ -667,8 +667,8 @@ def Update(request):
     #context={}
     if request.method == 'POST':
         #BASE_DIR = "c:/Users/hp/Downloads/project2/project2/adf_main/media/"
-        BASE_DIR = "G:/django_projects/git_satyam_adf/AutoDocumentFiling/adf_main/media/"
-        #BASE_DIR = "C:/Users/Priyanshu Agarwal/projects/AutoDocumentFiling/adf_main/media/"
+        #BASE_DIR = "G:/django_projects/git_satyam_adf/AutoDocumentFiling/adf_main/media/"
+        BASE_DIR = "C:/Users/Priyanshu Agarwal/projects/AutoDocumentFiling/adf_main/media/"
         list=os.listdir(BASE_DIR)
         new_list = []
         for x in list:
@@ -775,7 +775,7 @@ def Update(request):
                     add_words_database(full_text,"Invoice","full_text")
 
                     counts = Counter(keyword_list)
-                    add_words_database(counts,"Email","keywords")
+                    add_words_database(counts,"Invoice","keywords")
 
                 elif request.POST["Issuer"] == "Flipkart":
                     mydict1 = {}
