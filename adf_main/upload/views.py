@@ -574,8 +574,8 @@ def script(url, current_folder, name,keyword_front,doctype,size):
                     sub_lst = sub_lst + temp_dict['<s>']
                 if(len(temp_dict['keywords'])!=0):
                     keyword_lst = keyword_lst + temp_dict['keywords']
-
-            keyword_lst.append(keyword_front)  
+            for i in keyword_front:
+                keyword_lst.append(i)  
             counts = Counter(keyword_lst)
             add_words_database(counts,"Email","keywords")
             add_words_database(counts,"All","keywords")
@@ -630,7 +630,8 @@ def script(url, current_folder, name,keyword_front,doctype,size):
                         mydict['paragraphs'] = []
                     key = 'keywords'
                     if pageNumber==0:
-                        temp_dict['keywords'].append(keyword_front)
+                        for i in keyword_front:
+                            temp_dict['keywords'].append(i)
                     if key in temp_dict.keys():
                         mydict['keywords'] = temp_dict['keywords']
                     else:
@@ -870,10 +871,10 @@ def Update(request):
                 client.adf_main.adf_frontend.insert(mydict1)
 
             elif request.POST["doc_type"] == "Email":
-                script(url,current_folder,name,keyword_front,"Email",size)
+                script(url,current_folder,name,keyword_front.split(),"Email",size)
             
             elif request.POST["doc_type"] == "Others":
-                script(url,current_folder,name,keyword_front,"Others",size)
+                script(url,current_folder,name,keyword_front.split(),"Others",size)
 
         return render(request, 'upload/upload.html')
 
