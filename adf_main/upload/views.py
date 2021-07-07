@@ -112,7 +112,7 @@ def script(url, current_folder, name,keyword_front,doctype,size):
             y = x[0][4:]
             res = y.replace(", ", " ").split()
             mydict['To'] = res
-
+            res = [x.lower() for x in res]
             counts = Counter(res)
             add_words_database(counts,"Email","To")
             
@@ -143,6 +143,7 @@ def script(url, current_folder, name,keyword_front,doctype,size):
                 from_list.remove(item)
         mydict['From'] = from_list
 
+        from_list = [x.lower() for x in from_list]
         counts = Counter(from_list)
         add_words_database(counts,"Email","From")
 
@@ -185,6 +186,7 @@ def script(url, current_folder, name,keyword_front,doctype,size):
         attachments +=pdfs+docx+jpg+png+zips+txt+json+ics
         mydict['Attachments'] = attachments
 
+        attachments = [x.lower() for x in attachments]
         counts = Counter(attachments)
         add_words_database(counts,"Email","Attachments")
         # Body
@@ -575,7 +577,8 @@ def script(url, current_folder, name,keyword_front,doctype,size):
                 if(len(temp_dict['keywords'])!=0):
                     keyword_lst = keyword_lst + temp_dict['keywords']
 
-            keyword_lst.append(keyword_front)  
+            keyword_lst.append(keyword_front) 
+            keyword_lst = [x.lower() for x in keyword_lst] 
             counts = Counter(keyword_lst)
             add_words_database(counts,"Email","keywords")
             add_words_database(counts,"All","keywords")
@@ -646,7 +649,8 @@ def script(url, current_folder, name,keyword_front,doctype,size):
                     full_text = pandas.Series(full_text.split()).value_counts()
                     full_text = full_text.to_dict()
                     add_words_database(full_text,"Others","full_text")
- 
+
+                    temp_dict['keywords']  = [x.lower() for x in temp_dict['keywords']]
                     counts = Counter(temp_dict['keywords'])
                     add_words_database(counts,"Others","keywords")
                     add_words_database(counts,"All","keywords")
@@ -730,6 +734,8 @@ def Update(request):
                 if request.POST['Issuer'] == "Amazon":
 
                     company_lst = ["Amazon"]
+                    company_lst = [x.lower() for x in company_lst]
+
                     counts = Counter(company_lst)
                     add_words_database(counts,"Invoice","Company")
                     # text = convert('text', filePDF, pages=None)
@@ -804,13 +810,15 @@ def Update(request):
                     full_text = full_text.to_dict()
                     add_words_database(full_text,"Invoice","full_text")
                     add_words_database(full_text,"All","full_text")
-
+                    
+                    keyword_list = [x.lower() for x in keyword_list]
                     counts = Counter(keyword_list)
                     add_words_database(counts,"Invoice","keywords")
                     add_words_database(counts,"All","keywords")
 
                 elif request.POST["Issuer"] == "Flipkart":
                     company_lst = ["Flipkart"]
+                    company_lst = [x.lower() for x in company_lst]
                     counts = Counter(company_lst)
                     add_words_database(counts,"Invoice","Company")
 
@@ -825,7 +833,8 @@ def Update(request):
                     mydict1['keywords'] = keyword_front
                     mydict1['keywords'] = keyword_front
                     keyword_list = keyword_front.split()
-
+                    
+                    keyword_list = [x.lower() for x in keyword_list]
                     counts = Counter(keyword_list)
                     add_words_database(counts,"Invoice","keywords")
                     add_words_database(counts,"All","keywords")
@@ -839,6 +848,7 @@ def Update(request):
 
                 elif request.POST["Issuer"] == "Oyo":
                     company_lst = ["Oyo"]
+                    company_lst = [x.lower() for x in company_lst]
                     counts = Counter(company_lst)
                     add_words_database(counts,"Invoice","Company")
 
@@ -852,7 +862,8 @@ def Update(request):
                     mydict1['content_text'] = " ".join(fh.split())
                     mydict1['keywords'] = keyword_front
                     keyword_list = keyword_front.split()
-
+                    
+                    keyword_list = [x.lower() for x in keyword_list]
                     counts = Counter(keyword_list)
                     add_words_database(counts,"Invoice","keywords")
                     add_words_database(counts,"All","keywords")
