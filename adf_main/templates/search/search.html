@@ -1,5 +1,6 @@
+{%load static%}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <style>
   body {
     background-color: antiquewhite;
@@ -71,7 +72,12 @@
 </style>
 
 <head>
-  <title>ADF | Document Search</title>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <title>ADF | Document Search</title>
 </head>
 
 <body>
@@ -200,6 +206,54 @@
         </li>
       </ul>
     </form>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+      $(function () {
+        function split(val) {
+          return val.split(/,/);
+        }
+      
+          $("#keyword")
+          // don't navigate away from the field on tab when selecting an item
+          .on("keydown", function (event) {
+            if (event.keyCode === $.ui.keyCode.TAB &&
+              $(this).autocomplete("instance").menu.active) {
+              event.preventDefault();
+            }
+          })
+          .autocomplete({
+            minLength: 0,
+            source: "{% url 'autocomplete' %}",
+            focus: function () {
+              // prevent value inserted on focus
+              return false;
+            },
+            select: function (event, ui) {
+              // var terms = split( this.value );
+              // console.log(this.value);
+              // console.log(typeof this.value)
+              var cur = this.value;
+              console.log(cur)
+              var index;
+              for (let i = cur.length - 1; i >= 0; i--) {
+                if (cur[i] == '+' || cur[i] == '-' || cur[i] == '|') {
+                  index = i;
+                  break;
+                }
+              }
+              cur = cur.slice(0, index + 1);
+              // console.log(typeof cur);
+              for (let i = 0; i < ui.item.value.length; i++) {
+                cur = cur + ui.item.value[i];
+              }
+              this.value = cur
+              return false;
+            }
+          });
+  
+      });
+    </script>
   </div>
 
   {% else %}
@@ -220,99 +274,7 @@
     </form>
   </div>
 
-  {% endif%}
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  <script>
-    $(function () {
-      function split(val) {
-        return val.split(/,/);
-      }
-
-      $("#product")
-        // don't navigate away from the field on tab when selecting an item
-        .on("keydown", function (event) {
-          if (event.keyCode === $.ui.keyCode.TAB &&
-            $(this).autocomplete("instance").menu.active) {
-            event.preventDefault();
-          }
-        })
-        .autocomplete({
-          minLength: 0,
-          source: "{% url 'autocomplete' %}",
-          focus: function () {
-            // prevent value inserted on focus
-            return false;
-          },
-          select: function (event, ui) {
-            // var terms = split( this.value );
-            // console.log(this.value);
-            // console.log(typeof this.value)
-            var cur = this.value;
-            console.log(cur)
-            var index;
-            for (let i = cur.length - 1; i >= 0; i--) {
-              if (cur[i] == '+' || cur[i] == '-' || cur[i] == '|') {
-                index = i;
-                break;
-              }
-            }
-            cur = cur.slice(0, index + 1);
-            // console.log(typeof cur);
-            for (let i = 0; i < ui.item.value.length; i++) {
-              cur = cur + ui.item.value[i];
-            }
-            this.value = cur
-            return false;
-          }
-        });
-
-    });
-    $(function () {
-      function split(val) {
-        return val.split(/,/);
-      }
-
-      $("#keyword")
-        // don't navigate away from the field on tab when selecting an item
-        .on("keydown", function (event) {
-          if (event.keyCode === $.ui.keyCode.TAB &&
-            $(this).autocomplete("instance").menu.active) {
-            event.preventDefault();
-          }
-        })
-        .autocomplete({
-          minLength: 0,
-          source: "{% url 'autocomplete' %}",
-          focus: function () {
-            // prevent value inserted on focus
-            return false;
-          },
-          select: function (event, ui) {
-            // var terms = split( this.value );
-            // console.log(this.value);
-            // console.log(typeof this.value)
-            var cur = this.value;
-            console.log(cur)
-            var index;
-            for (let i = cur.length - 1; i >= 0; i--) {
-              if (cur[i] == '+' || cur[i] == '-' || cur[i] == '|') {
-                index = i;
-                break;
-              }
-            }
-            cur = cur.slice(0, index + 1);
-            // console.log(typeof cur);
-            for (let i = 0; i < ui.item.value.length; i++) {
-              cur = cur + ui.item.value[i];
-            }
-            this.value = cur
-            return false;
-          }
-        });
-
-    });
-  </script>
+{% endif%}
+ 
 </body>
-
 </html>

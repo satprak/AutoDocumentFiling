@@ -29,14 +29,14 @@ def autocomplete(request):
             else:
                 text = i+text
         t2=[]
-        text= text.lower()
+        # text= text.lower()
         print(text)
         length=len(text)
         if not length:
             return JsonResponse([], safe=False)
         client =  MongoClient('mongodb://localhost:27017/')
-        list1 = list(client.adf_main.adf_list.find())
-        list2= list1[0]['list']
+        list1 = list(client.adf_main.adf_list.find({"doc_type":"Invoice"}))
+        list2= list1[0]['content_text']
         list3=[]
         for x in list2:
             if len(x)>=length:

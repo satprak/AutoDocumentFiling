@@ -777,6 +777,43 @@ def Update(request):
                             }
                         }
                     )
+                    mydict1['Size'] = size
+                    # d = dict()
+  
+                    # # Loop through each line of the file
+                    # for line in mydict1["content_text"]:
+                    #     # Remove the leading spaces and newline character
+                    #     line = line.strip()
+                    
+                    #     # Convert the characters in line to 
+                    #     # lowercase to avoid case mismatch
+                    #     line = line.lower()
+                    
+                    #     # Split the line into words
+                    #     words = line.split(" ")
+                    
+                    #     # Iterate over each word in line
+                    #     for word in words:
+                    #         # Check if the word is already in dictionary
+                    #         if word in d:
+                    #             client.adf_main.adf_list.update(
+                    #                 {
+                    #                     "doc_type":"Invoice"
+                    #                 },
+                    #                 {
+                    #                     "$push":{
+                    #                         "frequency":{
+                    #                             "$each":
+                    #                         }
+                    #                     }
+                    #                 }
+                    #             )
+                    #             # Increment count of word by 1
+                    #             d[word] = d[word] + 1
+                    #         else:
+                    #             # Add the word to dictionary with count 1
+                    #             d[word] = 1
+                    
 
                 elif request.POST["Issuer"] == "Flipkart":
                     mydict1 = {}
@@ -790,22 +827,47 @@ def Update(request):
                     mydict1['keywords'] = keyword_front
                     mydict1['keywords'] = keyword_front
                     keyword_list = keyword_front.split()
+                    keyword_list1 = [i.lower() for i in keyword_list]
                     content_test_list = remove_stopwards(mydict1["content_text"])
+                    content_test_list1 = [i.lower() for i in content_test_list]
                     client.adf_main.adf_list.update(
                         {"doc_type":"Invoice"},
                         {
                             "$push": {
                                 "keywords": {
-                                    "$each": keyword_list,
+                                    "$each": keyword_list1,
                                     "$position": -1
                                 },
                                 "content_text": {
-                                    "$each": content_test_list,
+                                    "$each": content_test_list1,
                                     "$position": -1
                                 }
                             }
                         }
                     )
+                    # d = dict()
+  
+                    # # Loop through each line of the file
+                    # for line in text:
+                    #     # Remove the leading spaces and newline character
+                    #     line = line.strip()
+                    
+                    #     # Convert the characters in line to 
+                    #     # lowercase to avoid case mismatch
+                    #     line = line.lower()
+                    
+                    #     # Split the line into words
+                    #     words = line.split(" ")
+                    
+                    #     # Iterate over each word in line
+                    #     for word in words:
+                    #         # Check if the word is already in dictionary
+                    #         if word in d:
+                    #             # Increment count of word by 1
+                    #             d[word] = d[word] + 1
+                    #         else:
+                    #             # Add the word to dictionary with count 1
+                    #             d[word] = 1
                     mydict1['Size'] = size
 
                 elif request.POST["Issuer"] == "Oyo":
