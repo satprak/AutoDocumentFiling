@@ -683,7 +683,7 @@ def script(url, current_folder, name,keyword_front,doctype,size):
 def Update(request):
     #context={}
     if request.method == 'POST':
-        BASE_DIR = "c:/Users/hp/Downloads/project2/project2/adf_main/media/"
+        BASE_DIR = "media/"
         # BASE_DIR = "G:/django_projects/git_satyam_adf/AutoDocumentFiling/adf_main/media/"
         #BASE_DIR = "C:/Users/Priyanshu Agarwal/projects/AutoDocumentFiling/adf_main/media/"
         list=os.listdir(BASE_DIR)
