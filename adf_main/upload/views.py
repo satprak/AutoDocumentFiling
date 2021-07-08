@@ -112,8 +112,8 @@ def script(url, current_folder, name,keyword_front,doctype,size):
             x = re.findall("To:.*", to)
             y = x[0][4:]
             res = y.replace(", ", " ").split()
-            mydict['To'] = res
             res = [x.lower() for x in res]
+            mydict['To'] = res
             counts = Counter(res)
             add_words_database(counts,"Email","To")
             
@@ -142,9 +142,9 @@ def script(url, current_folder, name,keyword_front,doctype,size):
                 from_list.remove("<" + target_string_lower + ">")
             if(temp):
                 from_list.remove(item)
+        from_list = [x.lower() for x in from_list]
         mydict['From'] = from_list
 
-        from_list = [x.lower() for x in from_list]
         counts = Counter(from_list)
         add_words_database(counts,"Email","From")
 
@@ -185,9 +185,9 @@ def script(url, current_folder, name,keyword_front,doctype,size):
         json = re.findall('\S+.json', after_attachments)
         ics = re.findall('\S+.ics', after_attachments)
         attachments +=pdfs+docx+jpg+png+zips+txt+json+ics
+        attachments = [x.lower() for x in attachments]
         mydict['Attachments'] = attachments
 
-        attachments = [x.lower() for x in attachments]
         counts = Counter(attachments)
         add_words_database(counts,"Email","Attachments")
         # Body
@@ -523,7 +523,7 @@ def script(url, current_folder, name,keyword_front,doctype,size):
 
 
     def convert(file_path, file_name,doc_type,header_para_key, pages=None,):
-
+        file_name = file_name.lower()
         file_name_words = clean_text_suggestions(file_name)
         file_name_words = pandas.Series(file_name_words.split()).value_counts()
         file_name_words = file_name_words.to_dict()

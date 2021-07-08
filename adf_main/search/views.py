@@ -272,7 +272,8 @@ def search(request):
             # ******** - mongoDB queries ****** ---- 
             
             doc1= df.find({'$and':main_dic} )
-            docs = doc1
+            docs={}
+            docs['main'] = doc1
             docs["to_search"] = s
             #print("docs", docs)
             
@@ -307,13 +308,21 @@ def search(request):
             dic_date = {'$and':[{'date':{'$gt':in_start_date}},{'date':{'$lt':in_end_date}}]}
             main_dic.append(dic_date)
             #_________________amount________________________________
-            amount = request.POST['amount']
-            if(amount):
-                tmp = amount.split('-')
-                low = int(tmp[0])
-                high = int(tmp[1])
-                dic_amt = {'$and':[{'amount':{'$gt':low,'$lt':high}}]}
-                main_dic.append(dic_amt)
+            st_amount = request.POST['st_amount']
+            end_amount = request.POST['end_amount']
+            if(st_amount):
+                st_amount=int(st_amount)
+                dic_amt = {'$and':[{'amount':{'$gt':st_amount}}]}
+            else:
+                dic_amt = {'$and':[{'amount':{'$gt':0}}]}
+            main_dic.append(dic_amt)
+            if(end_amount):
+                end_amount=int(end_amount)
+                dic_amt = {'$and':[{'amount':{'$lt':end_amount}}]}
+            else:
+                dic_amt = {'$and':[{'amount':{'$lt':9999999999}}]}
+            main_dic.append(dic_amt)
+
             #_______________keyword__________________________________
             key_string = request.POST['keyword']
             if len(key_string):
