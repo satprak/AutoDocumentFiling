@@ -18,6 +18,7 @@ import os
 import django_heroku
 import cloudinary
 import cloudinary_storage
+from decouple import config
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -151,7 +152,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-from decouple import config
+
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': config('saty', default=""),

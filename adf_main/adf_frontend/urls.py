@@ -27,7 +27,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')), 
     path('file/',include('upload.urls')),
     path('file/',include('search.urls')),
-    re_path(r'^media/(?P<path>,*)$', serve, {'document_root':settings.MEDIA_ROOT}),
+    # re_path(r'^media/(?P<path>,*)$', serve, {'document_root':settings.MEDIA_ROOT}),
     
 ]
 
