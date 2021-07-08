@@ -272,7 +272,8 @@ def search(request):
             # ******** - mongoDB queries ****** ---- 
             
             doc1= df.find({'$and':main_dic} )
-            docs = doc1
+            docs = {}
+            docs['main'] = doc1
             docs["to_search"] = s
             #print("docs", docs)
             
