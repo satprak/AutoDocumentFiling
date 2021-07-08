@@ -21,14 +21,13 @@ from adf_frontend import settings
 
 urlpatterns = [
     
-    path('admin/', admin.site.urls),
+    path('', admin.site.urls),
+    #path('', include('users.urls')),
     path('user/', include('users.urls')),
     path('accounts/', include('django.contrib.auth.urls')), 
     path('file/',include('upload.urls')),
     path('file/',include('search.urls')),
     
-    
-
 ]
 
 if settings.DEBUG:

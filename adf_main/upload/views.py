@@ -1,5 +1,6 @@
+
  #### -------------------------  #### ------ Checking if pull works --------#### --------------##################
-# saty mc
+# saty mczzz
 # piyush kon h
 # I just wnated to change something
 import io
@@ -17,6 +18,7 @@ import pandas
 import django
 import numpy as np
 import datetime
+import string
 
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -45,7 +47,8 @@ from nltk.corpus import stopwords
 
 from sklearn.feature_extraction.text import CountVectorizer
 
-client = MongoClient('mongodb://localhost:27017/')
+from collections import Counter
+
 #..............#
 def upload(request):
     return render(request, 'upload/upload.html')
@@ -56,12 +59,47 @@ def comp(s):
     return tmp
 
 #.............#
+client = MongoClient('mongodb://localhost:27017/')
+
+def clean_text_suggestions(sentence, stopwords_list = set(stopwords.words('english')), punct = set(string.punctuation)):
+        sentence = re.sub('[^a-zA-Z]', ' ', sentence)
+        sentence = str(sentence).lower()
+        sentence = re.sub("&lt;/?.*?&gt;"," &lt;&gt; ",sentence)
+        sentence = re.sub("(\\d|\\W)+"," ",sentence)
+        sentence = sentence.split()
+        sentence = [word for word in sentence if not word in stopwords_list]        
+        sentence = [word for word in sentence if len(word) > 2]
+        sentence = [word for word in sentence if word not in punct]
+        sentence = " ".join(sentence)
+        return sentence
+def add_words_database(word_freq_dict,doc_type,field):
+
+        l = word_freq_dict
+        search_in = '%s.word'%(field)
+        var = '%s.$.freq'%(field)
+        ll = {}
+        for x in l:
+            dic = client.adf_main.adf_list.update({'doc_type':doc_type,search_in:x},{'$inc':{var:l[x]}})
+            if dic[ "nModified"]==0:
+                ll[x]=l[x]
+        lst = []
+        for key in ll:
+            temp = {"freq":ll[key],"word":key}
+            lst.append(temp)
+
+        client.adf_main.adf_list.update(
+            {'doc_type':doc_type},
+            {"$push": { field: { "$each": lst ,  "$sort": -1}}}
+        )
+
 def script(url, current_folder, name,keyword_front,doctype,size):
     #print("Script working ??")
     client = MongoClient('mongodb://localhost:27017/')
-    def extract_email_info(text):
+
+    def extract_email_info(text):        
         fh = text
         mydict = {}
+
         mydict["Size"] = size
         # TO: extraction
         index_num = fh.find('To:')
@@ -75,7 +113,11 @@ def script(url, current_folder, name,keyword_front,doctype,size):
             y = x[0][4:]
             res = y.replace(", ", " ").split()
             mydict['To'] = res
-
+            res = [x.lower() for x in res]
+            counts = Counter(res)
+            add_words_database(counts,"Email","To")
+            
+            
         # #  From:
         match = re.findall("Forwarded message.*", fh)
         #print(match)
@@ -84,13 +126,7 @@ def script(url, current_folder, name,keyword_front,doctype,size):
             flag = 0
 
         from_list = []
-        # chunks = fh.split('\n')
-        # valueToBeRemoved = ''
-        # myList = [value for value in chunks if value != valueToBeRemoved]
-        # from_list.append(myList[2])
-        #print(from_list)
-        match = re.findall("<\w\S*@*.\w>", fh)
-        # match[1]
+        match = re.findall("<(\w\S*@*.\w)>", fh)
         from_list.extend(match)
         
         if(flag):    # implies message is foorwarded
@@ -100,15 +136,17 @@ def script(url, current_folder, name,keyword_front,doctype,size):
         from_list = list(dict.fromkeys(from_list))
         for item in from_list:
             target_string_lower = item[1:len(item)-1]
-            #print(target_string_lower,item)
             is_target_in_list = target_string_lower in (string.lower() for string in res)
             temp = item in (string.lower() for string in res)
-            #print(is_target_in_list,temp)
             if(is_target_in_list):
                 from_list.remove("<" + target_string_lower + ">")
             if(temp):
                 from_list.remove(item)
         mydict['From'] = from_list
+
+        from_list = [x.lower() for x in from_list]
+        counts = Counter(from_list)
+        add_words_database(counts,"Email","From")
 
         # # Recieved timestamp
         temp = re.findall('(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun),[\s-](?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[\s-]\d{2,4},[\s-]\d{4}', fh)
@@ -119,13 +157,17 @@ def script(url, current_folder, name,keyword_front,doctype,size):
         chunks = fh.split('\n')
         valueToBeRemoved = ''
         myList = [value for value in chunks if value != valueToBeRemoved]
-        #mydict['Subject'] = chunks[2]
         match = re.findall("<\w\S*@*.\w>", myList[2])
         if(len(match)):
             sub = myList[3]
         else:
             sub = myList[2]
         mydict['Subject'] = sub
+
+        subject_list_words = clean_text_suggestions(sub)
+        subject_list_words = pandas.Series(subject_list_words.split()).value_counts()
+        subject_list_words = subject_list_words.to_dict()
+        add_words_database(subject_list_words,"Email","Subject")
 
         # # Attachments
         index_num = fh.find('attachments')
@@ -145,6 +187,9 @@ def script(url, current_folder, name,keyword_front,doctype,size):
         attachments +=pdfs+docx+jpg+png+zips+txt+json+ics
         mydict['Attachments'] = attachments
 
+        attachments = [x.lower() for x in attachments]
+        counts = Counter(attachments)
+        add_words_database(counts,"Email","Attachments")
         # Body
         index_num = fh.find(temp[0])
         after_date = fh[index_num : ]
@@ -162,6 +207,12 @@ def script(url, current_folder, name,keyword_front,doctype,size):
         body_str = " ".join(body_str.split())
         mydict['Body'] = body_str
         
+        
+        body_list_words = clean_text_suggestions(body_str)
+        body_list_words = pandas.Series(body_list_words.split()).value_counts()
+        body_list_words = body_list_words.to_dict()
+        add_words_database(body_list_words,"Email","Body")
+
         return mydict
 
     def extract_header_para_keywords(file_path):
@@ -473,6 +524,11 @@ def script(url, current_folder, name,keyword_front,doctype,size):
 
     def convert(file_path, file_name,doc_type,header_para_key, pages=None,):
 
+        file_name_words = clean_text_suggestions(file_name)
+        file_name_words = pandas.Series(file_name_words.split()).value_counts()
+        file_name_words = file_name_words.to_dict()
+        add_words_database(file_name_words,"All","file_name")
+
         if(doc_type=="Email"):
             def convert(fname, pages=None):
                 if not pages: pagenums = set()
@@ -496,9 +552,15 @@ def script(url, current_folder, name,keyword_front,doctype,size):
 
                 infile.close(); converter.close(); output.close()
                 return convertedPDF
+
             text = convert(file_path)
             content_text = " ".join(text.split())
             mydict = {"doc_type":"Email", "file_name": file_name, "file_path": current_folder,"content_text": content_text}
+            
+            full_text_email = clean_text_suggestions(content_text)
+            full_text_email = pandas.Series(full_text_email.split()).value_counts()
+            full_text_email = full_text_email.to_dict()
+            add_words_database(full_text_email,"All","full_text")
 
             header_lst = []
             sub_lst = []
@@ -515,7 +577,14 @@ def script(url, current_folder, name,keyword_front,doctype,size):
                     sub_lst = sub_lst + temp_dict['<s>']
                 if(len(temp_dict['keywords'])!=0):
                     keyword_lst = keyword_lst + temp_dict['keywords']
-            keyword_lst.append(keyword_front)  
+            for i in keyword_front:
+                keyword_lst.append(i)  
+            
+            keyword_lst  = [x.lower() for x in keyword_lst]
+            counts = Counter(keyword_lst)
+            add_words_database(counts,"Email","keywords")
+            add_words_database(counts,"All","keywords")
+
             mydict['headers'] = header_lst
             mydict['paragraphs'] = para
             mydict['subscripts'] = sub_lst
@@ -525,7 +594,7 @@ def script(url, current_folder, name,keyword_front,doctype,size):
             client.adf_main.adf_frontend.insert(mydict)
 
         else:
-
+            
             if not pages: pagenums = set()
             else:         pagenums = set(pages)
             manager = PDFResourceManager()
@@ -546,6 +615,12 @@ def script(url, current_folder, name,keyword_front,doctype,size):
                     text = output.getvalue()
                     content_text = " ".join(text.split())
                     mydict = {"doc_type":"Others", "file_name": file_name, "file_path": current_folder,"content_text": content_text, "page_number": page_no+1}
+                    
+                    full_text_all = clean_text_suggestions(content_text)
+                    full_text_all = pandas.Series(full_text_all.split()).value_counts()
+                    full_text_all = full_text_all.to_dict()
+                    add_words_database(full_text_all,"All","full_text")
+
                     temp_dict = header_para_key[page_no+1]
 
                     key = '<h>'
@@ -560,7 +635,8 @@ def script(url, current_folder, name,keyword_front,doctype,size):
                         mydict['paragraphs'] = []
                     key = 'keywords'
                     if pageNumber==0:
-                        temp_dict['keywords'].append(keyword_front)
+                        for i in keyword_front:
+                            temp_dict['keywords'].append(i)
                     if key in temp_dict.keys():
                         mydict['keywords'] = temp_dict['keywords']
                     else:
@@ -571,6 +647,22 @@ def script(url, current_folder, name,keyword_front,doctype,size):
                     else:
                         mydict['subscripts'] = []
                     
+                    # adding suggestions in database
+                    full_text = clean_text_suggestions(content_text)
+                    full_text = pandas.Series(full_text.split()).value_counts()
+                    full_text = full_text.to_dict()
+                    add_words_database(full_text,"Others","full_text")
+                    
+                    key_list = []
+                    for item in temp_dict['keywords']:
+                        key_list.append(item)
+                    key_list  = [x.lower() for x in key_list]
+
+                    print(key_list, type(key_list))
+                    counts = Counter(key_list)
+                    add_words_database(counts,"Others","keywords")
+                    add_words_database(counts,"All","keywords")
+
                     #print(mydict)
                     # inserts document in mongoDB database
                     mydict["Size"] = size
@@ -586,29 +678,14 @@ def script(url, current_folder, name,keyword_front,doctype,size):
     header_para_key = extract_header_para_keywords(file_path)
     convert(file_path,name,doc_type,header_para_key)
 
-def remove_stopwards(text):
-    from nltk.corpus import stopwords
-    from nltk.tokenize import word_tokenize
-    
-    example_sent = text 
-    stop_words = set(stopwords.words('english'))
-    word_tokens = word_tokenize(example_sent)
-    
-    filtered_sentence = [w for w in word_tokens if not w.lower() in stop_words]
-    
-    filtered_sentence = []
-    
-    for w in word_tokens:
-        if w not in stop_words:
-            filtered_sentence.append(w)
-    return filtered_sentence
+
 
 def Update(request):
     #context={}
     if request.method == 'POST':
         BASE_DIR = "c:/Users/hp/Downloads/project2/project2/adf_main/media/"
         # BASE_DIR = "G:/django_projects/git_satyam_adf/AutoDocumentFiling/adf_main/media/"
-        # BASE_DIR = "C:/Users/Priyanshu Agarwal/projects/AutoDocumentFiling/adf_main/media/"
+        #BASE_DIR = "C:/Users/Priyanshu Agarwal/projects/AutoDocumentFiling/adf_main/media/"
         list=os.listdir(BASE_DIR)
         new_list = []
         for x in list:
@@ -649,6 +726,11 @@ def Update(request):
                     fh = fh + str(page.getText())
                 if request.POST['Issuer'] == "Amazon":
 
+                    company_lst = ["Amazon"]
+                    company_lst = [x.lower() for x in company_lst]
+
+                    counts = Counter(company_lst)
+                    add_words_database(counts,"Invoice","Company")
                     # text = convert('text', filePDF, pages=None)
                     pagenums = set()
                     manager = PDFResourceManager()
@@ -676,6 +758,13 @@ def Update(request):
                     match = re.findall("Invoice Date :.*", text)
                     mydict1['doc_type'] = "Invoice"
                     mydict1['file_name'] = name
+
+                    # adding file name in suggestion database
+                    file_name_words = clean_text_suggestions(name)
+                    file_name_words = pandas.Series(file_name_words.split()).value_counts()
+                    file_name_words = file_name_words.to_dict()
+                    add_words_database(file_name_words,"All","file_name")
+
                     mydict1['file_path'] = current_folder
                     tt = match[0][15:21]+match[0][23:]
                     # tt = tt[:7]+tt[9:]
@@ -708,24 +797,24 @@ def Update(request):
                     mydict1['keywords'] = keyword_front
                     mydict1['Size'] = size
                     keyword_list = keyword_front.split()
-                    content_test_list = remove_stopwards(mydict1["content_text"])
-                    client.adf_main.adf_list.update(
-                        {"doc_type":"Invoice"},
-                        {
-                            "$push": {
-                                "keywords": {
-                                    "$each": keyword_list,
-                                    "$position": -1
-                                },
-                                "content_text": {
-                                    "$each": content_test_list,
-                                    "$position": -1
-                                }
-                            }
-                        }
-                    )
+
+                    full_text = clean_text_suggestions(mydict1["content_text"])
+                    full_text = pandas.Series(full_text.split()).value_counts()
+                    full_text = full_text.to_dict()
+                    add_words_database(full_text,"Invoice","full_text")
+                    add_words_database(full_text,"All","full_text")
+                    
+                    keyword_list = [x.lower() for x in keyword_list]
+                    counts = Counter(keyword_list)
+                    add_words_database(counts,"Invoice","keywords")
+                    add_words_database(counts,"All","keywords")
 
                 elif request.POST["Issuer"] == "Flipkart":
+                    company_lst = ["Flipkart"]
+                    company_lst = [x.lower() for x in company_lst]
+                    counts = Counter(company_lst)
+                    add_words_database(counts,"Invoice","Company")
+
                     mydict1 = {}
                     templates = read_templates('templates/upload/flipkart_template')
                     tmp = extract_data(url, templates=templates)
@@ -735,9 +824,27 @@ def Update(request):
                     mydict1['file_path'] = current_folder
                     mydict1['content_text'] = " ".join(fh.split())
                     mydict1['keywords'] = keyword_front
+                    mydict1['keywords'] = keyword_front
+                    keyword_list = keyword_front.split()
+                    
+                    keyword_list = [x.lower() for x in keyword_list]
+                    counts = Counter(keyword_list)
+                    add_words_database(counts,"Invoice","keywords")
+                    add_words_database(counts,"All","keywords")
+
+                    full_text = clean_text_suggestions(mydict1["content_text"])
+                    full_text = pandas.Series(full_text.split()).value_counts()
+                    full_text = full_text.to_dict()
+                    add_words_database(full_text,"Invoice","full_text")
+                    add_words_database(full_text,"All","full_text")
                     mydict1['Size'] = size
 
                 elif request.POST["Issuer"] == "Oyo":
+                    company_lst = ["Oyo"]
+                    company_lst = [x.lower() for x in company_lst]
+                    counts = Counter(company_lst)
+                    add_words_database(counts,"Invoice","Company")
+
                     mydict1 = {}
                     templates = read_templates('templates/upload/oyo_template')
                     tmp = extract_data(url, templates=templates)
@@ -748,22 +855,18 @@ def Update(request):
                     mydict1['content_text'] = " ".join(fh.split())
                     mydict1['keywords'] = keyword_front
                     keyword_list = keyword_front.split()
-                    content_test_list = remove_stopwards(mydict1["content_text"])
-                    client.adf_main.adf_list.update(
-                        {"doc_type":"Invoice"},
-                        {
-                            "$push": {
-                                "keywords": {
-                                    "$each": keyword_list,
-                                    "$position": -1
-                                },
-                                "content_text": {
-                                    "$each": content_test_list,
-                                    "$position": -1
-                                }
-                            }
-                        }
-                    )
+                    
+                    keyword_list = [x.lower() for x in keyword_list]
+                    counts = Counter(keyword_list)
+                    add_words_database(counts,"Invoice","keywords")
+                    add_words_database(counts,"All","keywords")
+
+                    full_text = clean_text_suggestions(mydict1["content_text"])
+                    full_text = pandas.Series(full_text.split()).value_counts()
+                    full_text = full_text.to_dict()
+                    add_words_database(full_text,"Invoice","full_text")
+                    add_words_database(full_text,"All","full_text")
+
                     mydict1['Size'] = size
 
                 # print(mydict)
@@ -771,10 +874,10 @@ def Update(request):
                 client.adf_main.adf_frontend.insert(mydict1)
 
             elif request.POST["doc_type"] == "Email":
-                script(url,current_folder,name,keyword_front,"Email",size)
+                script(url,current_folder,name,keyword_front.split(),"Email",size)
             
             elif request.POST["doc_type"] == "Others":
-                script(url,current_folder,name,keyword_front,"Others",size)
+                script(url,current_folder,name,keyword_front.split(),"Others",size)
 
         return render(request, 'upload/upload.html')
 
