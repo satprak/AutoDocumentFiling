@@ -2,21 +2,10 @@ from django.shortcuts import render
 from pymongo import MongoClient
 import datetime
 
-# saty
-#hhuhedhuihui
-# this is my second change for git push
-# hello hi wassup
-# hello hi wassup2
-# hello hi wassup3
-# hello hi wassup4
-# hello hi wassup5
-# hello hi wassup6
-#this change is made de bbyy  mmee
-#new change done by me
-
 from django.http import JsonResponse
 from .models import Product
 import json
+
 def autocomplete(request):
     if 'term' in request.GET:
         text = request.GET['term']
@@ -35,7 +24,7 @@ def autocomplete(request):
         if not length:
             return JsonResponse([], safe=False)
         client =  MongoClient('mongodb://localhost:27017/')
-        list1 = list(client.adf_main.adf_list.find())
+        list1 = list(client.adf_main.adf_list2.find())
         list2= list1[0]['list']
         list3=[]
         for x in list2:
@@ -45,6 +34,7 @@ def autocomplete(request):
         return JsonResponse(list3, safe=False)
 
     return render(request, 'search/home.html')
+
 
 def text_search(key_string,search_in,dic):
     
