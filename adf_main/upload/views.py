@@ -1,5 +1,6 @@
+
  #### -------------------------  #### ------ Checking if pull works --------#### --------------##################
-# saty mc
+# saty mczzz
 # piyush kon h
 # I just wnated to change something
 import io
@@ -576,9 +577,10 @@ def script(url, current_folder, name,keyword_front,doctype,size):
                     sub_lst = sub_lst + temp_dict['<s>']
                 if(len(temp_dict['keywords'])!=0):
                     keyword_lst = keyword_lst + temp_dict['keywords']
-
-            keyword_lst.append(keyword_front) 
-            keyword_lst = [x.lower() for x in keyword_lst] 
+            for i in keyword_front:
+                keyword_lst.append(i)  
+            
+            keyword_lst  = [x.lower() for x in keyword_lst]
             counts = Counter(keyword_lst)
             add_words_database(counts,"Email","keywords")
             add_words_database(counts,"All","keywords")
@@ -633,7 +635,8 @@ def script(url, current_folder, name,keyword_front,doctype,size):
                         mydict['paragraphs'] = []
                     key = 'keywords'
                     if pageNumber==0:
-                        temp_dict['keywords'].append(keyword_front)
+                        for i in keyword_front:
+                            temp_dict['keywords'].append(i)
                     if key in temp_dict.keys():
                         mydict['keywords'] = temp_dict['keywords']
                     else:
@@ -649,9 +652,14 @@ def script(url, current_folder, name,keyword_front,doctype,size):
                     full_text = pandas.Series(full_text.split()).value_counts()
                     full_text = full_text.to_dict()
                     add_words_database(full_text,"Others","full_text")
+                    
+                    key_list = []
+                    for item in temp_dict['keywords']:
+                        key_list.append(item)
+                    key_list  = [x.lower() for x in key_list]
 
-                    temp_dict['keywords']  = [x.lower() for x in temp_dict['keywords']]
-                    counts = Counter(temp_dict['keywords'])
+                    print(key_list, type(key_list))
+                    counts = Counter(key_list)
                     add_words_database(counts,"Others","keywords")
                     add_words_database(counts,"All","keywords")
 
@@ -670,22 +678,7 @@ def script(url, current_folder, name,keyword_front,doctype,size):
     header_para_key = extract_header_para_keywords(file_path)
     convert(file_path,name,doc_type,header_para_key)
 
-def remove_stopwards(text):
-    from nltk.corpus import stopwords
-    from nltk.tokenize import word_tokenize
-    
-    example_sent = text 
-    stop_words = set(stopwords.words('english'))
-    word_tokens = word_tokenize(example_sent)
-    
-    filtered_sentence = [w for w in word_tokens if not w.lower() in stop_words]
-    
-    filtered_sentence = []
-    
-    for w in word_tokens:
-        if w not in stop_words:
-            filtered_sentence.append(w)
-    return filtered_sentence
+
 
 def Update(request):
     #context={}
@@ -881,10 +874,10 @@ def Update(request):
                 client.adf_main.adf_frontend.insert(mydict1)
 
             elif request.POST["doc_type"] == "Email":
-                script(url,current_folder,name,keyword_front,"Email",size)
+                script(url,current_folder,name,keyword_front.split(),"Email",size)
             
             elif request.POST["doc_type"] == "Others":
-                script(url,current_folder,name,keyword_front,"Others",size)
+                script(url,current_folder,name,keyword_front.split(),"Others",size)
 
         return render(request, 'upload/upload.html')
 

@@ -131,7 +131,7 @@
           })
           .autocomplete({
             minLength: 0,
-            source: "{% url 'autocomplete' %}",
+            source: "{% url 'Invoice_Company' %}",
             focus: function () {
               // prevent value inserted on focus
               return false;
@@ -169,7 +169,7 @@
           })
           .autocomplete({
             minLength: 0,
-            source: "{% url 'autocomplete' %}",
+            source: "{% url 'Invoice_keywords' %}",
             focus: function () {
               // prevent value inserted on focus
               return false;
@@ -207,7 +207,7 @@
           })
           .autocomplete({
             minLength: 0,
-            source: "{% url 'autocomplete' %}",
+            source: "{% url 'Invoice_full_text' %}",
             focus: function () {
               // prevent value inserted on focus
               return false;
@@ -260,11 +260,11 @@
           <label>Keyword:</label>
           <input type="text" name="keyword" placeholder="Keyword" id="keyword" /><br /><br />
           <label>Attachments:</label>
-          <input type="text" name="Attachments" /><br /><br />
+          <input type="text" name="Attachments" id="Attachments"/><br /><br />
           <label>Body Search:</label>
           <input type="text" name="Body" id="body"/><br /><br />
           <label>Subject:</label>
-          <input type="text" name="Subject" /><br /><br />
+          <input type="text" name="Subject" id="Subject"/><br /><br />
           <label>Start_Date:</label>
           <input type="date" name="Start_Date" /><br /><br />
           <label>End_Date:</label>
@@ -294,7 +294,45 @@
           })
           .autocomplete({
             minLength: 0,
-            source: "{% url 'autocomplete' %}",
+            source: "{% url 'Email_To' %}",
+            focus: function () {
+              // prevent value inserted on focus
+              return false;
+            },
+            select: function (event, ui) {
+              // var terms = split( this.value );
+              // console.log(this.value);
+              // console.log(typeof this.value)
+              var cur = this.value;
+              console.log(cur)
+              var index;
+              for (let i = cur.length - 1; i >= 0; i--) {
+                if (cur[i] == '+' || cur[i] == '-' || cur[i] == '|') {
+                  index = i;
+                  break;
+                }
+              }
+              cur = cur.slice(0, index + 1);
+              // console.log(typeof cur);
+              for (let i = 0; i < ui.item.value.length; i++) {
+                cur = cur + ui.item.value[i];
+              }
+              this.value = cur
+              return false;
+            }
+          });
+          
+          $("#Attachments")
+          // don't navigate away from the field on tab when selecting an item
+          .on("keydown", function (event) {
+            if (event.keyCode === $.ui.keyCode.TAB &&
+              $(this).autocomplete("instance").menu.active) {
+              event.preventDefault();
+            }
+          })
+          .autocomplete({
+            minLength: 0,
+            source: "{% url 'Email_Attachments' %}",
             focus: function () {
               // prevent value inserted on focus
               return false;
@@ -322,6 +360,46 @@
             }
           });
 
+
+          $("#Subject")
+          // don't navigate away from the field on tab when selecting an item
+          .on("keydown", function (event) {
+            if (event.keyCode === $.ui.keyCode.TAB &&
+              $(this).autocomplete("instance").menu.active) {
+              event.preventDefault();
+            }
+          })
+          .autocomplete({
+            minLength: 0,
+            source: "{% url 'Email_Subject' %}",
+            focus: function () {
+              // prevent value inserted on focus
+              return false;
+            },
+            select: function (event, ui) {
+              // var terms = split( this.value );
+              // console.log(this.value);
+              // console.log(typeof this.value)
+              var cur = this.value;
+              console.log(cur)
+              var index;
+              for (let i = cur.length - 1; i >= 0; i--) {
+                if (cur[i] == '+' || cur[i] == '-' || cur[i] == '|') {
+                  index = i;
+                  break;
+                }
+              }
+              cur = cur.slice(0, index + 1);
+              // console.log(typeof cur);
+              for (let i = 0; i < ui.item.value.length; i++) {
+                cur = cur + ui.item.value[i];
+              }
+              this.value = cur
+              return false;
+            }
+          });
+
+
           $("#From")
           // don't navigate away from the field on tab when selecting an item
           .on("keydown", function (event) {
@@ -332,7 +410,7 @@
           })
           .autocomplete({
             minLength: 0,
-            source: "{% url 'autocomplete' %}",
+            source: "{% url 'Email_From' %}",
             focus: function () {
               // prevent value inserted on focus
               return false;
@@ -370,7 +448,7 @@
           })
           .autocomplete({
             minLength: 0,
-            source: "{% url 'autocomplete' %}",
+            source: "{% url 'Email_keywords' %}",
             focus: function () {
               // prevent value inserted on focus
               return false;
@@ -408,7 +486,7 @@
           })
           .autocomplete({
             minLength: 0,
-            source: "{% url 'autocomplete' %}",
+            source: "{% url 'Email_Body' %}",
             focus: function () {
               // prevent value inserted on focus
               return false;
@@ -454,7 +532,7 @@
           <label>Document Type:</label>
           <input type="text" name="doc_type" value="Others" readonly /><br /><br />
           <label>Header_Para Search:</label>
-          <input type="text" name="Header_Para" autocomplete="off" /><br /><br />
+          <input type="text" name="Header_Para" id ="Header_Para" autocomplete="off" /><br /><br />
           <label>Search in:</label>
           <input type="checkbox" id="header" name="header" />Header
           <input type="checkbox" id="Paragraph" name="Paragraph" />Paragraph<br /><br />
@@ -485,7 +563,7 @@
           })
           .autocomplete({
             minLength: 0,
-            source: "{% url 'autocomplete' %}",
+            source: "{% url 'Others_keywords' %}",
             focus: function () {
               // prevent value inserted on focus
               return false;
@@ -512,6 +590,45 @@
               return false;
             }
           });
+
+          $("#Header_Para")
+          // don't navigate away from the field on tab when selecting an item
+          .on("keydown", function (event) {
+            if (event.keyCode === $.ui.keyCode.TAB &&
+              $(this).autocomplete("instance").menu.active) {
+              event.preventDefault();
+            }
+          })
+          .autocomplete({
+            minLength: 0,
+            source: "{% url 'Others_full_text' %}",
+            focus: function () {
+              // prevent value inserted on focus
+              return false;
+            },
+            select: function (event, ui) {
+              // var terms = split( this.value );
+              // console.log(this.value);
+              // console.log(typeof this.value)
+              var cur = this.value;
+              console.log(cur)
+              var index;
+              for (let i = cur.length - 1; i >= 0; i--) {
+                if (cur[i] == '+' || cur[i] == '-' || cur[i] == '|') {
+                  index = i;
+                  break;
+                }
+              }
+              cur = cur.slice(0, index + 1);
+              // console.log(typeof cur);
+              for (let i = 0; i < ui.item.value.length; i++) {
+                cur = cur + ui.item.value[i];
+              }
+              this.value = cur
+              return false;
+            }
+          });
+
       });
     </script>
   </div>
@@ -559,7 +676,7 @@
           })
           .autocomplete({
             minLength: 0,
-            source: "{% url 'autocomplete' %}",
+            source: "{% url 'All_keywords' %}",
             focus: function () {
               // prevent value inserted on focus
               return false;
@@ -597,7 +714,7 @@
           })
           .autocomplete({
             minLength: 0,
-            source: "{% url 'autocomplete' %}",
+            source: "{% url 'All_full_text' %}",
             focus: function () {
               // prevent value inserted on focus
               return false;
@@ -635,7 +752,7 @@
           })
           .autocomplete({
             minLength: 0,
-            source: "{% url 'autocomplete' %}",
+            source: "{% url 'All_file_name' %}",
             focus: function () {
               // prevent value inserted on focus
               return false;
