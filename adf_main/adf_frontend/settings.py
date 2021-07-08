@@ -32,7 +32,7 @@ SECRET_KEY = 'syvjpg(n7mdg(e3qz4%(z&%k&)+t@m)kt0c80@1827ppcew&-3'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['adf-main.herokuapp.com']
 
 
 # Application definition
@@ -159,15 +159,14 @@ CLOUDINARY_STORAGE = {
     'API_KEY': config('672179415177664', default=""),
     'API_SECRET': config('n0EjKl9pwAGyScvr7c4-iAKEzkg', default=""),
 }
-
+MEDIA_URL="/media/"
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 STATIC_URL = '/static/'
 STATIC_ROOT=os.path.join(BASE_DIR,'static')
 
 
-MEDIA_URL="/media/"
-MEDIA_ROOT=os.path.join(BASE_DIR,"media")
+
 
 
 AUTH_USER_MODEL="users.CustomUser"
