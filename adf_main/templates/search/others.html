@@ -17,10 +17,10 @@
     <th>Document Path</th>
     <th>Page No.</th>
     
-     {% for doc in docs %}  
+     {% for doc in docs.main %}  
        <tr> 
         <td> {{doc.file_name}} </td>
-        <td> <a href="{{MEDIA_URL}}{{doc.file_path}}/{{doc.file_name}}#page={{doc.page_number}}">Link</td>
+        <td> <a href="{{MEDIA_URL}}{{doc.file_path}}/{{doc.file_name}}#page={{doc.page_number}}#search={{docs.to_search}}">Link</td>
         <td> {{doc.page_number}}</td>
        </tr> 
        {% endfor %}
