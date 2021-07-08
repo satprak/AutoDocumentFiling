@@ -14,7 +14,8 @@ import django
 import numpy as np
 import datetime
 import string
-
+#from django.contrib import user
+from users.models import CustomUser, Users
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
@@ -87,7 +88,7 @@ def add_words_database(word_freq_dict,doc_type,field):
             {"$push": { field: { "$each": lst ,  "$sort": -1}}}
         )
 
-def script(url, current_folder, name,keyword_front,doctype,size):
+def script(url, current_folder, name,keyword_front,doctype,size,uploaded_by):
     #print("Script working ??")
     client = MongoClient('mongodb://localhost:27017/')
 
@@ -584,6 +585,7 @@ def script(url, current_folder, name,keyword_front,doctype,size):
             mydict['paragraphs'] = para
             mydict['subscripts'] = sub_lst
             mydict['keywords'] = keyword_lst
+            mydict['uploaded_by'] = uploaded_by
             email_dict = extract_email_info(text)
             mydict = {**mydict,**email_dict}
             client.adf_main.adf_frontend.insert(mydict)
@@ -641,6 +643,7 @@ def script(url, current_folder, name,keyword_front,doctype,size):
                         mydict['subscripts'] = temp_dict['<s>']
                     else:
                         mydict['subscripts'] = []
+                    mydict['uploaded_by'] = uploaded_by    
                     
                     # adding suggestions in database
                     full_text = clean_text_suggestions(content_text)
@@ -653,7 +656,7 @@ def script(url, current_folder, name,keyword_front,doctype,size):
                         key_list.append(item)
                     key_list  = [x.lower() for x in key_list]
 
-                   # print(key_list, type(key_list))
+                   #print(key_list, type(key_list))
                     counts = Counter(key_list)
                     add_words_database(counts,"Others","keywords")
                     add_words_database(counts,"All","keywords")
@@ -681,6 +684,7 @@ def Update(request):
         #BASE_DIR = "c:/Users/hp/Downloads/project2/project2/adf_main/media/"
         BASE_DIR = "G:/django_projects/git_satyam_adf/AutoDocumentFiling/adf_main/media/"
         #BASE_DIR = "C:/Users/Priyanshu Agarwal/projects/AutoDocumentFiling/adf_main/media/"
+        uploaded_by =  request.POST['uploaded_by'][:-1]
         list=os.listdir(BASE_DIR)
         new_list = []
         for x in list:
@@ -791,6 +795,7 @@ def Update(request):
                     mydict1['issuer'] = 'Amazon'
                     mydict1['keywords'] = keyword_front
                     mydict1['Size'] = size
+                    mydict1['uploaded_by'] = uploaded_by
                     keyword_list = keyword_front.split()
 
                     full_text = clean_text_suggestions(mydict1["content_text"])
@@ -820,6 +825,7 @@ def Update(request):
                     mydict1['content_text'] = " ".join(fh.split())
                     mydict1['keywords'] = keyword_front
                     mydict1['keywords'] = keyword_front
+                    mydict1['uploaded_by'] = uploaded_by
                     keyword_list = keyword_front.split()
                     
                     keyword_list = [x.lower() for x in keyword_list]
@@ -849,6 +855,7 @@ def Update(request):
                     mydict1['file_path'] = current_folder
                     mydict1['content_text'] = " ".join(fh.split())
                     mydict1['keywords'] = keyword_front
+                    mydict1['uploaded_by'] = uploaded_by
                     keyword_list = keyword_front.split()
                     
                     keyword_list = [x.lower() for x in keyword_list]
@@ -869,10 +876,10 @@ def Update(request):
                 client.adf_main.adf_frontend.insert(mydict1)
 
             elif request.POST["doc_type"] == "Email":
-                script(url,current_folder,name,keyword_front.split(),"Email",size)
+                script(url,current_folder,name,keyword_front.split(),"Email",size,uploaded_by)
             
             elif request.POST["doc_type"] == "Others":
-                script(url,current_folder,name,keyword_front.split(),"Others",size)
+                script(url,current_folder,name,keyword_front.split(),"Others",size,uploaded_by)
 
         return render(request, 'upload/upload.html')
 

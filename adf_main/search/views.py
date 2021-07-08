@@ -368,6 +368,13 @@ def search(request):
             s=temp_main_dic[-1]
             for i in temp_main_dic[0:-1]:
                 main_dic.append(i) 
+            # ---By uloaded user #---
+            to_string = request.POST["uploaded_by"]   
+            temp_main_dic = text_search(to_string,'uploaded_by',dic,s)
+            s=temp_main_dic[-1]
+            for i in temp_main_dic[0:-1]:
+                main_dic.append(i)
+                
             doc1= df.find({'$and':main_dic} )
             docs={}
             docs["main"] = doc1
