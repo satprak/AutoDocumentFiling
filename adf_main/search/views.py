@@ -45,6 +45,9 @@ def Invoice_keywords(request):
 def Invoice_full_text(request):
     if 'term' in request.GET:
         return JsonResponse(autocomplete(request.GET['term'],'Invoice','full_text'), safe=False)
+def Invoice_uploaded_by(request):
+    if 'term' in request.GET:
+        return JsonResponse(autocomplete(request.GET['term'],'Invoice','uploaded_by'), safe=False)
 def Email_From(request):
     if 'term' in request.GET:
         return JsonResponse(autocomplete(request.GET['term'],'Email','From'), safe=False)
@@ -63,12 +66,18 @@ def Email_Subject(request):
 def Email_Attachments(request):
     if 'term' in request.GET:
         return JsonResponse(autocomplete(request.GET['term'],'Email','Attachments'), safe=False)
+def Email_uploaded_by(request):
+    if 'term' in request.GET:
+        return JsonResponse(autocomplete(request.GET['term'],'Email','uploaded_by'), safe=False)
 def Others_keywords(request):
     if 'term' in request.GET:
         return JsonResponse(autocomplete(request.GET['term'],'Others','keywords'), safe=False)
 def Others_full_text(request):
     if 'term' in request.GET:
         return JsonResponse(autocomplete(request.GET['term'],'Others','full_text'), safe=False)
+def Others_uploaded_by(request):
+    if 'term' in request.GET:
+        return JsonResponse(autocomplete(request.GET['term'],'Others','uploaded_by'), safe=False)
 def All_file_name(request):
     if 'term' in request.GET:
         return JsonResponse(autocomplete(request.GET['term'],'All','file_name'), safe=False)
@@ -78,6 +87,9 @@ def All_full_text(request):
 def All_keywords(request):
     if 'term' in request.GET:
         return JsonResponse(autocomplete(request.GET['term'],'All','keywords'), safe=False)
+def All_uploaded_by(request):
+    if 'term' in request.GET:
+        return JsonResponse(autocomplete(request.GET['term'],'All','uploaded_by'), safe=False)
 
 #_____fxn for searching text having + - | ________________________________________
 def text_search(key_string,search_in,dic):
@@ -146,14 +158,22 @@ def search(request):
             if is_header:
                 temp_main_dic1 = text_search(Header_Para,'headers',dic)
                 temp_main_dic2 = text_search(keyword,'keywords',dic)
-                temp_main_dic = temp_main_dic1 + temp_main_dic2
+                temp_main_dic3 = dic
+                uploaded_by = request.POST['uploaded_by']
+                if uploaded_by:
+                    temp_main_dic3 = {'$and':[dic,{'uploaded_by': { '$regex': uploaded_by, '$options': 'i' } }]}
+                temp_main_dic = temp_main_dic1 + temp_main_dic2 + temp_main_dic3
                 doc1= client.adf_main.adf_frontend.find({'$and':temp_main_dic} )
                 docs.append(list(doc1))
 # ********************paragraph selected************
             if is_para:
                 temp_main_dic1 = text_search(Header_Para,'paragraphs',dic)
                 temp_main_dic2 = text_search(keyword,'keywords',dic)
-                temp_main_dic = temp_main_dic1 + temp_main_dic2
+                temp_main_dic3 = dic
+                uploaded_by = request.POST['uploaded_by']
+                if uploaded_by:
+                    temp_main_dic3 = {'$and':[dic,{'uploaded_by': { '$regex': uploaded_by, '$options': 'i' } }]}
+                temp_main_dic = temp_main_dic1 + temp_main_dic2 + temp_main_dic3
                 doc1= client.adf_main.adf_frontend.find({'$and':temp_main_dic} )
                 docs.append(list(doc1))
             
@@ -202,7 +222,12 @@ def search(request):
             for i in temp_main_dic:
                 main_dic.append(i)          
 
-
+            # uploaded_by______________________________
+            uploaded_by = request.POST['uploaded_by']
+            if uploaded_by:
+                temp_main_dic = {'uploaded_by': { '$regex': uploaded_by, '$options': 'i' } }
+                main_dic.append(temp_main_dic)
+#date________________________________________________________________
             dic_date = {'$and':[{'date':{'$gt':in_start_date}},{'date':{'$lt':in_end_date}}]}
             main_dic.append(dic_date)
 
@@ -282,6 +307,11 @@ def search(request):
             #____________________date_________________________________________
             dic_date = {'$and':[{'date':{'$gt':in_start_date}},{'date':{'$lt':in_end_date}}]}
             main_dic.append(dic_date)
+             # uploaded_by______________________________
+            uploaded_by = request.POST['uploaded_by']
+            if uploaded_by:
+                temp_main_dic = {'uploaded_by': { '$regex': uploaded_by, '$options': 'i' } }
+                main_dic.append(temp_main_dic)
             #_________________amount________________________________
             amount = request.POST['amount']
             if(amount):
@@ -322,6 +352,11 @@ def search(request):
             temp_main_dic = text_search(to_string,'content_text',dic)
             for i in temp_main_dic:
                 main_dic.append(i)  
+             # uploaded_by______________________________
+            uploaded_by = request.POST['uploaded_by']
+            if uploaded_by:
+                temp_main_dic = {'uploaded_by': { '$regex': uploaded_by, '$options': 'i' } }
+                main_dic.append(temp_main_dic)
             #---** ---- searching in file_name ---**  
             to_string = request.POST["file_name"]   
             temp_main_dic = text_search(to_string,'file_name',dic)
