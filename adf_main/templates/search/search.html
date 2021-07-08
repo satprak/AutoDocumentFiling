@@ -1,5 +1,6 @@
+{%load static%}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <style>
   body {
     background-color: antiquewhite;
@@ -71,7 +72,12 @@
 </style>
 
 <head>
-  <title>ADF | Document Search</title>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <title>ADF | Document Search</title>
 </head>
 
 <body>
@@ -89,7 +95,7 @@
           <label>Document Type:</label>
           <input type="text" name="doc_type" value="Invoice" readonly /><br /><br />
           <label>Company:</label>
-          <input type="text" name="com"><br /><br />
+          <input type="text" name="com" id="com"><br /><br />
           <label>To-Date:</label>
           <input type="date" name="date1" /><br /><br />
           <label>From-Date:</label>
@@ -97,9 +103,9 @@
           <label>Amount:</label>
           <input type="text" name="amount" /><br /><br />
           <label>Keyword:</label>
-          <input type="text" name="keyword" placeholder="Keyword" autocomplete="off" /><br /><br />
+          <input type="text" name="keyword" placeholder="Keyword" id="keyword" /><br /><br />
           <label>FullText:</label>
-          <input type="text" name="full"><br /><br />
+          <input type="text" name="full" id="full"><br /><br />
           <button type="submit" class="submitbtn">Submit</button><br>
           <button type="reset" class="submitbtn">Reset</button><br /><br />
           <a href="{% url 'users:user_home' %}">
@@ -107,6 +113,131 @@
         </li>
       </ul>
     </form>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+      $(function () {
+        function split(val) {
+          return val.split(/,/);
+        }
+      
+          $("#com")
+          // don't navigate away from the field on tab when selecting an item
+          .on("keydown", function (event) {
+            if (event.keyCode === $.ui.keyCode.TAB &&
+              $(this).autocomplete("instance").menu.active) {
+              event.preventDefault();
+            }
+          })
+          .autocomplete({
+            minLength: 0,
+            source: "{% url 'autocomplete' %}",
+            focus: function () {
+              // prevent value inserted on focus
+              return false;
+            },
+            select: function (event, ui) {
+              // var terms = split( this.value );
+              // console.log(this.value);
+              // console.log(typeof this.value)
+              var cur = this.value;
+              console.log(cur)
+              var index;
+              for (let i = cur.length - 1; i >= 0; i--) {
+                if (cur[i] == '+' || cur[i] == '-' || cur[i] == '|') {
+                  index = i;
+                  break;
+                }
+              }
+              cur = cur.slice(0, index + 1);
+              // console.log(typeof cur);
+              for (let i = 0; i < ui.item.value.length; i++) {
+                cur = cur + ui.item.value[i];
+              }
+              this.value = cur
+              return false;
+            }
+          });
+
+          $("#keyword")
+          // don't navigate away from the field on tab when selecting an item
+          .on("keydown", function (event) {
+            if (event.keyCode === $.ui.keyCode.TAB &&
+              $(this).autocomplete("instance").menu.active) {
+              event.preventDefault();
+            }
+          })
+          .autocomplete({
+            minLength: 0,
+            source: "{% url 'autocomplete' %}",
+            focus: function () {
+              // prevent value inserted on focus
+              return false;
+            },
+            select: function (event, ui) {
+              // var terms = split( this.value );
+              // console.log(this.value);
+              // console.log(typeof this.value)
+              var cur = this.value;
+              console.log(cur)
+              var index;
+              for (let i = cur.length - 1; i >= 0; i--) {
+                if (cur[i] == '+' || cur[i] == '-' || cur[i] == '|') {
+                  index = i;
+                  break;
+                }
+              }
+              cur = cur.slice(0, index + 1);
+              // console.log(typeof cur);
+              for (let i = 0; i < ui.item.value.length; i++) {
+                cur = cur + ui.item.value[i];
+              }
+              this.value = cur
+              return false;
+            }
+          });
+
+          $("#full")
+          // don't navigate away from the field on tab when selecting an item
+          .on("keydown", function (event) {
+            if (event.keyCode === $.ui.keyCode.TAB &&
+              $(this).autocomplete("instance").menu.active) {
+              event.preventDefault();
+            }
+          })
+          .autocomplete({
+            minLength: 0,
+            source: "{% url 'autocomplete' %}",
+            focus: function () {
+              // prevent value inserted on focus
+              return false;
+            },
+            select: function (event, ui) {
+              // var terms = split( this.value );
+              // console.log(this.value);
+              // console.log(typeof this.value)
+              var cur = this.value;
+              console.log(cur)
+              var index;
+              for (let i = cur.length - 1; i >= 0; i--) {
+                if (cur[i] == '+' || cur[i] == '-' || cur[i] == '|') {
+                  index = i;
+                  break;
+                }
+              }
+              cur = cur.slice(0, index + 1);
+              // console.log(typeof cur);
+              for (let i = 0; i < ui.item.value.length; i++) {
+                cur = cur + ui.item.value[i];
+              }
+              this.value = cur
+              return false;
+            }
+          });
+          
+      });
+    </script>
+
   </div>
 
 
@@ -123,15 +254,15 @@
           <label>Document Type:</label>
           <input type="text" name="doc_type" value="Email" readonly /><br /><br />
           <label>To:</label>
-          <input type="text" name="To" /><br /><br />
+          <input type="text" name="To" id="To" /><br /><br />
           <label>From:</label>
-          <input type="text" name="From" /><br /><br />
+          <input type="text" name="From" id="From"/><br /><br />
           <label>Keyword:</label>
-          <input type="text" name="keyword" placeholder="Keyword" autocomplete="off" /><br /><br />
+          <input type="text" name="keyword" placeholder="Keyword" id="keyword" /><br /><br />
           <label>Attachments:</label>
-          <input type="text" name="Attachments" autocomplete="on" /><br /><br />
+          <input type="text" name="Attachments" /><br /><br />
           <label>Body Search:</label>
-          <input type="text" name="Body" /><br /><br />
+          <input type="text" name="Body" id="body"/><br /><br />
           <label>Subject:</label>
           <input type="text" name="Subject" /><br /><br />
           <label>Start_Date:</label>
@@ -145,6 +276,169 @@
         </li>
       </ul>
     </form>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+      $(function () {
+        function split(val) {
+          return val.split(/,/);
+        }
+      
+          $("#To")
+          // don't navigate away from the field on tab when selecting an item
+          .on("keydown", function (event) {
+            if (event.keyCode === $.ui.keyCode.TAB &&
+              $(this).autocomplete("instance").menu.active) {
+              event.preventDefault();
+            }
+          })
+          .autocomplete({
+            minLength: 0,
+            source: "{% url 'autocomplete' %}",
+            focus: function () {
+              // prevent value inserted on focus
+              return false;
+            },
+            select: function (event, ui) {
+              // var terms = split( this.value );
+              // console.log(this.value);
+              // console.log(typeof this.value)
+              var cur = this.value;
+              console.log(cur)
+              var index;
+              for (let i = cur.length - 1; i >= 0; i--) {
+                if (cur[i] == '+' || cur[i] == '-' || cur[i] == '|') {
+                  index = i;
+                  break;
+                }
+              }
+              cur = cur.slice(0, index + 1);
+              // console.log(typeof cur);
+              for (let i = 0; i < ui.item.value.length; i++) {
+                cur = cur + ui.item.value[i];
+              }
+              this.value = cur
+              return false;
+            }
+          });
+
+          $("#From")
+          // don't navigate away from the field on tab when selecting an item
+          .on("keydown", function (event) {
+            if (event.keyCode === $.ui.keyCode.TAB &&
+              $(this).autocomplete("instance").menu.active) {
+              event.preventDefault();
+            }
+          })
+          .autocomplete({
+            minLength: 0,
+            source: "{% url 'autocomplete' %}",
+            focus: function () {
+              // prevent value inserted on focus
+              return false;
+            },
+            select: function (event, ui) {
+              // var terms = split( this.value );
+              // console.log(this.value);
+              // console.log(typeof this.value)
+              var cur = this.value;
+              console.log(cur)
+              var index;
+              for (let i = cur.length - 1; i >= 0; i--) {
+                if (cur[i] == '+' || cur[i] == '-' || cur[i] == '|') {
+                  index = i;
+                  break;
+                }
+              }
+              cur = cur.slice(0, index + 1);
+              // console.log(typeof cur);
+              for (let i = 0; i < ui.item.value.length; i++) {
+                cur = cur + ui.item.value[i];
+              }
+              this.value = cur
+              return false;
+            }
+          });
+
+          $("#keyword")
+          // don't navigate away from the field on tab when selecting an item
+          .on("keydown", function (event) {
+            if (event.keyCode === $.ui.keyCode.TAB &&
+              $(this).autocomplete("instance").menu.active) {
+              event.preventDefault();
+            }
+          })
+          .autocomplete({
+            minLength: 0,
+            source: "{% url 'autocomplete' %}",
+            focus: function () {
+              // prevent value inserted on focus
+              return false;
+            },
+            select: function (event, ui) {
+              // var terms = split( this.value );
+              // console.log(this.value);
+              // console.log(typeof this.value)
+              var cur = this.value;
+              console.log(cur)
+              var index;
+              for (let i = cur.length - 1; i >= 0; i--) {
+                if (cur[i] == '+' || cur[i] == '-' || cur[i] == '|') {
+                  index = i;
+                  break;
+                }
+              }
+              cur = cur.slice(0, index + 1);
+              // console.log(typeof cur);
+              for (let i = 0; i < ui.item.value.length; i++) {
+                cur = cur + ui.item.value[i];
+              }
+              this.value = cur
+              return false;
+            }
+          });
+
+          $("#body")
+          // don't navigate away from the field on tab when selecting an item
+          .on("keydown", function (event) {
+            if (event.keyCode === $.ui.keyCode.TAB &&
+              $(this).autocomplete("instance").menu.active) {
+              event.preventDefault();
+            }
+          })
+          .autocomplete({
+            minLength: 0,
+            source: "{% url 'autocomplete' %}",
+            focus: function () {
+              // prevent value inserted on focus
+              return false;
+            },
+            select: function (event, ui) {
+              // var terms = split( this.value );
+              // console.log(this.value);
+              // console.log(typeof this.value)
+              var cur = this.value;
+              console.log(cur)
+              var index;
+              for (let i = cur.length - 1; i >= 0; i--) {
+                if (cur[i] == '+' || cur[i] == '-' || cur[i] == '|') {
+                  index = i;
+                  break;
+                }
+              }
+              cur = cur.slice(0, index + 1);
+              // console.log(typeof cur);
+              for (let i = 0; i < ui.item.value.length; i++) {
+                cur = cur + ui.item.value[i];
+              }
+              this.value = cur
+              return false;
+            }
+          });
+
+      });
+    </script>
+
   </div>
 
   {% elif type == "Others" %}
@@ -165,7 +459,7 @@
           <input type="checkbox" id="header" name="header" />Header
           <input type="checkbox" id="Paragraph" name="Paragraph" />Paragraph<br /><br />
           <label>Keyword:</label>
-          <input type="text" name="keyword" placeholder="Keyword" autocomplete="off" /><br /><br />
+          <input type="text" name="keyword" placeholder="Keyword" id="keyword" /><br /><br />
           <button type="submit" class="submitbtn">Submit</button><br>
           <button type="reset" class="submitbtn">Reset</button><br /><br />
           <a href="{% url 'users:user_home' %}">
@@ -173,6 +467,53 @@
         </li>
       </ul>
     </form>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+      $(function () {
+        function split(val) {
+          return val.split(/,/);
+        }
+      
+          $("#keyword")
+          // don't navigate away from the field on tab when selecting an item
+          .on("keydown", function (event) {
+            if (event.keyCode === $.ui.keyCode.TAB &&
+              $(this).autocomplete("instance").menu.active) {
+              event.preventDefault();
+            }
+          })
+          .autocomplete({
+            minLength: 0,
+            source: "{% url 'autocomplete' %}",
+            focus: function () {
+              // prevent value inserted on focus
+              return false;
+            },
+            select: function (event, ui) {
+              // var terms = split( this.value );
+              // console.log(this.value);
+              // console.log(typeof this.value)
+              var cur = this.value;
+              console.log(cur)
+              var index;
+              for (let i = cur.length - 1; i >= 0; i--) {
+                if (cur[i] == '+' || cur[i] == '-' || cur[i] == '|') {
+                  index = i;
+                  break;
+                }
+              }
+              cur = cur.slice(0, index + 1);
+              // console.log(typeof cur);
+              for (let i = 0; i < ui.item.value.length; i++) {
+                cur = cur + ui.item.value[i];
+              }
+              this.value = cur
+              return false;
+            }
+          });
+      });
+    </script>
   </div>
 
   {% elif type == "All" %}
@@ -190,9 +531,9 @@
           <label>Keyword:</label>
           <input type="text" name="keyword" id="keyword" placeholder="Keyword" /><br /><br />
           <label>Full Text:</label>
-          <input type="text" name="content_text" /><br /><br />
-          <label>File_name:</label>
-          <input type="text" name="file_name" /><br /><br />
+          <input type="text" name="content_text" id="content_text"/><br /><br />
+          <label>File Name:</label>
+          <input type="text" name="file_name" id="file_name"/><br /><br />
           <button type="submit" class="submitbtn">Submit</button><br>
           <button type="reset" class="submitbtn">Reset</button><br /><br />
           <a href="{% url 'users:user_home' %}">
@@ -200,6 +541,130 @@
         </li>
       </ul>
     </form>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+      $(function () {
+        function split(val) {
+          return val.split(/,/);
+        }
+      
+          $("#keyword")
+          // don't navigate away from the field on tab when selecting an item
+          .on("keydown", function (event) {
+            if (event.keyCode === $.ui.keyCode.TAB &&
+              $(this).autocomplete("instance").menu.active) {
+              event.preventDefault();
+            }
+          })
+          .autocomplete({
+            minLength: 0,
+            source: "{% url 'autocomplete' %}",
+            focus: function () {
+              // prevent value inserted on focus
+              return false;
+            },
+            select: function (event, ui) {
+              // var terms = split( this.value );
+              // console.log(this.value);
+              // console.log(typeof this.value)
+              var cur = this.value;
+              console.log(cur)
+              var index;
+              for (let i = cur.length - 1; i >= 0; i--) {
+                if (cur[i] == '+' || cur[i] == '-' || cur[i] == '|') {
+                  index = i;
+                  break;
+                }
+              }
+              cur = cur.slice(0, index + 1);
+              // console.log(typeof cur);
+              for (let i = 0; i < ui.item.value.length; i++) {
+                cur = cur + ui.item.value[i];
+              }
+              this.value = cur
+              return false;
+            }
+          });
+
+          $("#content_text")
+          // don't navigate away from the field on tab when selecting an item
+          .on("keydown", function (event) {
+            if (event.keyCode === $.ui.keyCode.TAB &&
+              $(this).autocomplete("instance").menu.active) {
+              event.preventDefault();
+            }
+          })
+          .autocomplete({
+            minLength: 0,
+            source: "{% url 'autocomplete' %}",
+            focus: function () {
+              // prevent value inserted on focus
+              return false;
+            },
+            select: function (event, ui) {
+              // var terms = split( this.value );
+              // console.log(this.value);
+              // console.log(typeof this.value)
+              var cur = this.value;
+              console.log(cur)
+              var index;
+              for (let i = cur.length - 1; i >= 0; i--) {
+                if (cur[i] == '+' || cur[i] == '-' || cur[i] == '|') {
+                  index = i;
+                  break;
+                }
+              }
+              cur = cur.slice(0, index + 1);
+              // console.log(typeof cur);
+              for (let i = 0; i < ui.item.value.length; i++) {
+                cur = cur + ui.item.value[i];
+              }
+              this.value = cur
+              return false;
+            }
+          });
+
+          $("#file_name")
+          // don't navigate away from the field on tab when selecting an item
+          .on("keydown", function (event) {
+            if (event.keyCode === $.ui.keyCode.TAB &&
+              $(this).autocomplete("instance").menu.active) {
+              event.preventDefault();
+            }
+          })
+          .autocomplete({
+            minLength: 0,
+            source: "{% url 'autocomplete' %}",
+            focus: function () {
+              // prevent value inserted on focus
+              return false;
+            },
+            select: function (event, ui) {
+              // var terms = split( this.value );
+              // console.log(this.value);
+              // console.log(typeof this.value)
+              var cur = this.value;
+              console.log(cur)
+              var index;
+              for (let i = cur.length - 1; i >= 0; i--) {
+                if (cur[i] == '+' || cur[i] == '-' || cur[i] == '|') {
+                  index = i;
+                  break;
+                }
+              }
+              cur = cur.slice(0, index + 1);
+              // console.log(typeof cur);
+              for (let i = 0; i < ui.item.value.length; i++) {
+                cur = cur + ui.item.value[i];
+              }
+              this.value = cur
+              return false;
+            }
+          });
+  
+      });
+    </script>
   </div>
 
   {% else %}
@@ -220,99 +685,7 @@
     </form>
   </div>
 
-  {% endif%}
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  <script>
-    $(function () {
-      function split(val) {
-        return val.split(/,/);
-      }
-
-      $("#product")
-        // don't navigate away from the field on tab when selecting an item
-        .on("keydown", function (event) {
-          if (event.keyCode === $.ui.keyCode.TAB &&
-            $(this).autocomplete("instance").menu.active) {
-            event.preventDefault();
-          }
-        })
-        .autocomplete({
-          minLength: 0,
-          source: "{% url 'autocomplete' %}",
-          focus: function () {
-            // prevent value inserted on focus
-            return false;
-          },
-          select: function (event, ui) {
-            // var terms = split( this.value );
-            // console.log(this.value);
-            // console.log(typeof this.value)
-            var cur = this.value;
-            console.log(cur)
-            var index;
-            for (let i = cur.length - 1; i >= 0; i--) {
-              if (cur[i] == '+' || cur[i] == '-' || cur[i] == '|') {
-                index = i;
-                break;
-              }
-            }
-            cur = cur.slice(0, index + 1);
-            // console.log(typeof cur);
-            for (let i = 0; i < ui.item.value.length; i++) {
-              cur = cur + ui.item.value[i];
-            }
-            this.value = cur
-            return false;
-          }
-        });
-
-    });
-    $(function () {
-      function split(val) {
-        return val.split(/,/);
-      }
-
-      $("#keyword")
-        // don't navigate away from the field on tab when selecting an item
-        .on("keydown", function (event) {
-          if (event.keyCode === $.ui.keyCode.TAB &&
-            $(this).autocomplete("instance").menu.active) {
-            event.preventDefault();
-          }
-        })
-        .autocomplete({
-          minLength: 0,
-          source: "{% url 'autocomplete' %}",
-          focus: function () {
-            // prevent value inserted on focus
-            return false;
-          },
-          select: function (event, ui) {
-            // var terms = split( this.value );
-            // console.log(this.value);
-            // console.log(typeof this.value)
-            var cur = this.value;
-            console.log(cur)
-            var index;
-            for (let i = cur.length - 1; i >= 0; i--) {
-              if (cur[i] == '+' || cur[i] == '-' || cur[i] == '|') {
-                index = i;
-                break;
-              }
-            }
-            cur = cur.slice(0, index + 1);
-            // console.log(typeof cur);
-            for (let i = 0; i < ui.item.value.length; i++) {
-              cur = cur + ui.item.value[i];
-            }
-            this.value = cur
-            return false;
-          }
-        });
-
-    });
-  </script>
+{% endif%}
+ 
 </body>
-
 </html>
