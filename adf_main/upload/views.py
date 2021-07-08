@@ -14,7 +14,6 @@ import django
 import numpy as np
 import datetime
 import string
-#from django.contrib import user
 from users.models import CustomUser, Users
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -586,12 +585,22 @@ def script(url, current_folder, name,keyword_front,doctype,size,uploaded_by):
             mydict['subscripts'] = sub_lst
             mydict['keywords'] = keyword_lst
             mydict['uploaded_by'] = uploaded_by
+
+            uploaded_list = [uploaded_by]
+            counts = Counter(uploaded_list)
+            add_words_database(counts,"Email","uploaded_by")
+            add_words_database(counts,"All","uploaded_by")
+
             email_dict = extract_email_info(text)
             mydict = {**mydict,**email_dict}
             client.adf_main.adf_frontend.insert(mydict)
 
         else:
-            
+            uploaded_list = [uploaded_by]
+            counts = Counter(uploaded_list)
+            add_words_database(counts,"Others","uploaded_by")
+            add_words_database(counts,"All","uploaded_by")
+
             if not pages: pagenums = set()
             else:         pagenums = set(pages)
             manager = PDFResourceManager()
@@ -643,7 +652,8 @@ def script(url, current_folder, name,keyword_front,doctype,size,uploaded_by):
                         mydict['subscripts'] = temp_dict['<s>']
                     else:
                         mydict['subscripts'] = []
-                    mydict['uploaded_by'] = uploaded_by    
+                    mydict['uploaded_by'] = uploaded_by   
+                     
                     
                     # adding suggestions in database
                     full_text = clean_text_suggestions(content_text)
@@ -685,6 +695,7 @@ def Update(request):
         BASE_DIR = "G:/django_projects/git_satyam_adf/AutoDocumentFiling/adf_main/media/"
         #BASE_DIR = "C:/Users/Priyanshu Agarwal/projects/AutoDocumentFiling/adf_main/media/"
         uploaded_by =  request.user.username
+        uploaded_by = uploaded_by.lower()
         list=os.listdir(BASE_DIR)
         new_list = []
         for x in list:
@@ -796,6 +807,11 @@ def Update(request):
                     mydict1['keywords'] = keyword_front
                     mydict1['Size'] = size
                     mydict1['uploaded_by'] = uploaded_by
+
+                    uploaded_list = [uploaded_by]
+                    counts = Counter(uploaded_list)
+                    add_words_database(counts,"Invoice","uploaded_by")
+                    add_words_database(counts,"All","uploaded_by")
                     keyword_list = keyword_front.split()
 
                     full_text = clean_text_suggestions(mydict1["content_text"])
@@ -826,6 +842,11 @@ def Update(request):
                     mydict1['keywords'] = keyword_front
                     mydict1['keywords'] = keyword_front
                     mydict1['uploaded_by'] = uploaded_by
+                    uploaded_list = [uploaded_by]
+                    counts = Counter(uploaded_list)
+                    add_words_database(counts,"Invoice","uploaded_by")
+                    add_words_database(counts,"All","uploaded_by")
+
                     keyword_list = keyword_front.split()
                     
                     keyword_list = [x.lower() for x in keyword_list]
@@ -856,6 +877,10 @@ def Update(request):
                     mydict1['content_text'] = " ".join(fh.split())
                     mydict1['keywords'] = keyword_front
                     mydict1['uploaded_by'] = uploaded_by
+                    uploaded_list = [uploaded_by]
+                    counts = Counter(uploaded_list)
+                    add_words_database(counts,"Invoice","uploaded_by")
+                    add_words_database(counts,"All","uploaded_by")
                     keyword_list = keyword_front.split()
                     
                     keyword_list = [x.lower() for x in keyword_list]
