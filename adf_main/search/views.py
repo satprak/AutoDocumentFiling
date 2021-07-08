@@ -17,16 +17,6 @@ def autocomplete(t1,doc_type,field):
             else:
                 text = i+text
         t2=[]
-<<<<<<< HEAD
-        # text= text.lower()
-        print(text)
-        length=len(text)
-        if not length:
-            return JsonResponse([], safe=False)
-        client =  MongoClient('mongodb://localhost:27017/')
-        list1 = list(client.adf_main.adf_list.find({"doc_type":"Invoice"}))
-        list2= list1[0]['content_text']
-=======
         client =  MongoClient('mongodb://localhost:27017/')
         text= text.lower()
         length=len(text)
@@ -34,7 +24,6 @@ def autocomplete(t1,doc_type,field):
             return JsonResponse([], safe=False)
         list1 = list(client.adf_main.adf_list.find({'doc_type':doc_type}))
         list2= list1[0][field]
->>>>>>> fa9cfefd7fce7a31593004dc5ad182d5a60c84b2
         list3=[]
         for x in list2:
             if len(x['word'])>=length:
