@@ -25,10 +25,14 @@ def autocomplete(t1,doc_type,field):
         list1 = list(client.adf_main.adf_list.find({'doc_type':doc_type}))
         list2= list1[0][field]
         list3=[]
+        count =0
         for x in list2:
             if len(x['word'])>=length:
                 if x['word'][:length]==text:
                     list3.append(x['word'])
+                    count+=1
+                    if count ==10:
+                        break
         return list3
 
 #____fxns for autocomplete for different different fields in front end________________________

@@ -28,8 +28,6 @@ urlpatterns = [
     path('file/',include('upload.urls')),
     path('file/',include('search.urls')),
     
-    
-
 ]
 
 if settings.DEBUG:
