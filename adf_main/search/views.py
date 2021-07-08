@@ -80,7 +80,7 @@ def All_keywords(request):
         return JsonResponse(autocomplete(request.GET['term'],'All','keywords'), safe=False)
 
 #_____fxn for searching text having + - | ________________________________________
-def text_search(key_string,search_in,dic):
+def text_search(key_string,search_in,dic,s):
     temp = '*'
     current = ""
     and_list=[]
@@ -111,6 +111,7 @@ def text_search(key_string,search_in,dic):
     dic1=dic
     if len(and_list):
         for word in and_list:
+            s=s+word+" "
             list1.append({search_in: { '$regex': word, '$options': 'i' } })
         dic1 = {'$and':[dic,{ '$and': list1}]}
 
@@ -125,10 +126,11 @@ def text_search(key_string,search_in,dic):
     dic3=dic
     if len(or_list):
         for word in or_list:
+            s=s+word+" "
             list3.append({search_in: { '$regex': word, '$options': 'i' } })
         dic3 = {'$and':[dic,{'$or': list3}]}
     
-    return [dic1,dic2,dic3]
+    return [dic1,dic2,dic3,s]
 
 def search(request):
     if request.method == 'POST':
@@ -142,17 +144,27 @@ def search(request):
             docs=[]
             dic={}
             dic['doc_type'] = 'Others'
+            
+            s = ""
             # ********************header selected************
             if is_header:
-                temp_main_dic1 = text_search(Header_Para,'headers',dic)
-                temp_main_dic2 = text_search(keyword,'keywords',dic)
+                temp = text_search(Header_Para,'headers',dic,s)
+                temp_main_dic1 = temp[0:-1]
+                s=temp[-1]
+                temp = text_search(keyword,'keywords',dic,s)
+                temp_main_dic2 = temp[0:-1]
+                s=temp[-1]
                 temp_main_dic = temp_main_dic1 + temp_main_dic2
                 doc1= client.adf_main.adf_frontend.find({'$and':temp_main_dic} )
                 docs.append(list(doc1))
 # ********************paragraph selected************
             if is_para:
-                temp_main_dic1 = text_search(Header_Para,'paragraphs',dic)
-                temp_main_dic2 = text_search(keyword,'keywords',dic)
+                temp = text_search(Header_Para,'paragraphs',dic,s)
+                temp_main_dic1 = temp[0:-1]
+                s=temp[-1]
+                temp = text_search(keyword,'keywords',dic,s)
+                temp_main_dic2 = temp[0:-1]
+                s=temp[-1]
                 temp_main_dic = temp_main_dic1 + temp_main_dic2
                 doc1= client.adf_main.adf_frontend.find({'$and':temp_main_dic} )
                 docs.append(list(doc1))
@@ -171,15 +183,18 @@ def search(request):
                 docs=new_list
             
             if len(docs)==0:#____if neither header nor para are selected____________
-                 temp_main_dic = text_search(keyword,'keywords',dic)
-                 doc1 = client.adf_main.adf_frontend.find({'$and':temp_main_dic})
-                 docs=doc1
-            
+                temp = text_search(keyword,'keywords',dic)
+                temp_main_dic = temp[0:-1]
+                s=temp[-1]
+                doc1 = client.adf_main.adf_frontend.find({'$and':temp_main_dic})
+                docs=doc1
+            docs["to_search"]=s
             return render(request, 'search/others.html', {'docs':docs})
 
         elif request.POST["doc_type"] == 'Email':
             df = client.adf_main.adf_frontend
             docs=[]
+            s=""
             in_start_date = request.POST["Start_Date"]
             in_end_date = request.POST["End_Date"]
             #print(in_date,type(in_date))
@@ -198,8 +213,9 @@ def search(request):
             to_string = request.POST["To"]   # psenwar@gmail.com+satyamprakashiitk2022@gmail.com
             dic={}
             dic['doc_type'] = 'Email'
-            temp_main_dic = text_search(to_string,'To',dic)
-            for i in temp_main_dic:
+            temp_main_dic = text_search(to_string,'To',dic,s)
+            s=temp_main_dic[-1]
+            for i in temp_main_dic[0:-1]:
                 main_dic.append(i)          
 
 
@@ -211,16 +227,18 @@ def search(request):
             if len(from_string):
                 dic={}
                 dic['doc_type'] = 'Email'
-                temp_main_dic = text_search(to_string,'From',dic)
-                for i in temp_main_dic:
+                temp_main_dic = text_search(to_string,'From',dic,s)
+                s=temp_main_dic[-1]
+                for i in temp_main_dic[0:-1]:
                     main_dic.append(i) 
           # ***** -----  BODY search ----- *******
             body_string = request.POST["Body"]   # psenwar@gmail.com+satyamprakashiitk2022@gmail.com
             if len(body_string):
                 dic={}
                 dic['doc_type'] = 'Email'
-                temp_main_dic = text_search(body_string,'Body',dic)
-                for i in temp_main_dic:
+                temp_main_dic = text_search(body_string,'Body',dic,s)
+                s=temp_main_dic[-1]
+                for i in temp_main_dic[0:-1]:
                     main_dic.append(i) 
 
             #****** ---- Subject ----*****
@@ -228,8 +246,9 @@ def search(request):
             if len(sub_string):
                 dic={}
                 dic['doc_type'] = 'Email'
-                temp_main_dic = text_search(sub_string,'Subject',dic)
-                for i in temp_main_dic:
+                temp_main_dic = text_search(sub_string,'Subject',dic,s)
+                s=temp_main_dic[-1]
+                for i in temp_main_dic[0:-1]:
                     main_dic.append(i) 
 
             #****** ---- Keyword ----*****
@@ -237,21 +256,24 @@ def search(request):
             if len(key_string):
                 dic={}
                 dic['doc_type'] = 'Email'
-                temp_main_dic = text_search(key_string,'keywords',dic)
-                for i in temp_main_dic:
+                temp_main_dic = text_search(key_string,'keywords',dic,s)
+                s=temp_main_dic[-1]
+                for i in temp_main_dic[0:-1]:
                     main_dic.append(i) 
             #****** ---- Attachments ----*****
             Attachments_string = request.POST["Attachments"]   # psenwar@gmail.com+satyamprakashiitk2022@gmail.com
             if len(Attachments_string):
                 dic={}
                 dic['doc_type'] = 'Email'
-                temp_main_dic = text_search(Attachments_string,'Attachments',dic)
-                for i in temp_main_dic:
+                temp_main_dic = text_search(Attachments_string,'Attachments',dic,s)
+                s=temp_main_dic[-1]
+                for i in temp_main_dic[0:-1]:
                     main_dic.append(i) 
             # ******** - mongoDB queries ****** ---- 
             
             doc1= df.find({'$and':main_dic} )
             docs = doc1
+            docs["to_search"] = s
             #print("docs", docs)
             
             #docs = db.find({'doc_type':'Email'})   
@@ -260,6 +282,7 @@ def search(request):
         elif request.POST["doc_type"] == 'Invoice':
             df = client.adf_main.adf_frontend
             docs=[]
+            s=""
             in_start_date = request.POST['date1']
             in_end_date = request.POST['date2']
             if(in_start_date):
@@ -276,8 +299,9 @@ def search(request):
             main_dic = []
             #_________________company___________________________
             company = request.POST['com']
-            temp_main_dic = text_search(company,'issuer',dic)
-            for i in temp_main_dic:
+            temp_main_dic = text_search(company,'issuer',dic,s)
+            s=temp_main_dic[-1]
+            for i in temp_main_dic[0:-1]:
                 main_dic.append(i) 
             #____________________date_________________________________________
             dic_date = {'$and':[{'date':{'$gt':in_start_date}},{'date':{'$lt':in_end_date}}]}
@@ -293,43 +317,52 @@ def search(request):
             #_______________keyword__________________________________
             key_string = request.POST['keyword']
             if len(key_string):
-                temp_main_dic = text_search(key_string,'keywords',dic)
-                for i in temp_main_dic:
+                temp_main_dic = text_search(key_string,'keywords',dic,s)
+                s=temp_main_dic[-1]
+                for i in temp_main_dic[0:-1]:
                     main_dic.append(i)
             #_______________full text__________________________________
             full = request.POST['full']
             if len(full):
-                temp_main_dic = text_search(full,'content_text',dic)
-                for i in temp_main_dic:
+                temp_main_dic = text_search(full,'content_text',dic,s)
+                s=temp_main_dic[-1]
+                for i in temp_main_dic[0:-1]:
                     main_dic.append(i) 
         #__________mongo query ____________________
             doc1 = df.find({'$and':main_dic})
-            docs = doc1
+            docs={}
+            docs["main"] = doc1
+            docs["to_search"] = s
             return render(request, 'search/invoice_search.html', {'docs': docs})
         
         elif request.POST["doc_type"] == 'All':
             df = client.adf_main.adf_frontend
             dic={}
+            s = ""
             dic = { "doc_type": { "$in": ["Email","Others","Invoice"] } }
             main_dic=[]
             #____keyword________________
             to_string = request.POST["keyword"]   
-            temp_main_dic = text_search(to_string,'keywords',dic)
-            for i in temp_main_dic:
+            temp_main_dic = text_search(to_string,'keywords',dic,s)
+            s=temp_main_dic[-1]
+            for i in temp_main_dic[0:-1]:
                 main_dic.append(i)  
             #____full text________________
             to_string = request.POST["content_text"]   
-            temp_main_dic = text_search(to_string,'content_text',dic)
-            for i in temp_main_dic:
+            temp_main_dic = text_search(to_string,'content_text',dic,s)
+            s=temp_main_dic[-1]
+            for i in temp_main_dic[0:-1]:
                 main_dic.append(i)  
             #---** ---- searching in file_name ---**  
             to_string = request.POST["file_name"]   
-            temp_main_dic = text_search(to_string,'file_name',dic)
-            for i in temp_main_dic:
-                main_dic.append(i)
-
+            temp_main_dic = text_search(to_string,'file_name',dic,s)
+            s=temp_main_dic[-1]
+            for i in temp_main_dic[0:-1]:
+                main_dic.append(i) 
             doc1= df.find({'$and':main_dic} )
-            docs = doc1
+            docs={}
+            docs["main"] = doc1
+            docs["to_search"] = s
             return render(request , 'search/all.html', {'docs':docs})
             
 
