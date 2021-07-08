@@ -804,7 +804,6 @@ def Update(request):
                     mydict1['keywords'] = keyword_front
                     mydict1['Size'] = size
                     keyword_list = keyword_front.split()
-<<<<<<< HEAD
                     content_test_list = remove_stopwards(mydict1["content_text"])
                     client.adf_main.adf_list.update(
                         {"doc_type":"Invoice"},
@@ -858,19 +857,6 @@ def Update(request):
                     #             # Add the word to dictionary with count 1
                     #             d[word] = 1
                     
-=======
-
-                    full_text = clean_text_suggestions(mydict1["content_text"])
-                    full_text = pandas.Series(full_text.split()).value_counts()
-                    full_text = full_text.to_dict()
-                    add_words_database(full_text,"Invoice","full_text")
-                    add_words_database(full_text,"All","full_text")
-                    
-                    keyword_list = [x.lower() for x in keyword_list]
-                    counts = Counter(keyword_list)
-                    add_words_database(counts,"Invoice","keywords")
-                    add_words_database(counts,"All","keywords")
->>>>>>> 103d03277580d011940155b1c74503bc343a37ee
 
                 elif request.POST["Issuer"] == "Flipkart":
                     company_lst = ["Flipkart"]
