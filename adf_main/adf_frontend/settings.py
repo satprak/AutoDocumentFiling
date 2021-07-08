@@ -154,17 +154,17 @@ USE_TZ = True
 
 
 
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': config('saty', default=""),
-    'API_KEY': config('672179415177664', default=""),
-    'API_SECRET': config('n0EjKl9pwAGyScvr7c4-iAKEzkg', default=""),
-}
 MEDIA_URL="/media/"
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 STATIC_URL = '/static/'
 STATIC_ROOT=os.path.join(BASE_DIR,'static')
 
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': config('saty', default=""),
+    'API_KEY': config('672179415177664', default=""),
+    'API_SECRET': config('n0EjKl9pwAGyScvr7c4-iAKEzkg', default=""),
+}
 
 
 
