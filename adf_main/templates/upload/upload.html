@@ -89,6 +89,8 @@ label{
           <option value="Flipkart">Flipkart</option>
           <option value="Oyo">Oyo</option>
         </select><br /><br />
+        
+        <input type="text" id="uploaded_by" name="uploaded_by" hidden value={{user.username}}/>
         <label for="myfile">Choose File:</label>
         <input type="file" id="myfile" name="myfile" multiple="" /><br /><br />
         <label for="myfile">Choose Folder:</label>
@@ -113,6 +115,7 @@ label{
         <li> 
         <label>Document Type:</label>
         <input type="text" name="doc_type" value="Email" size="9" readonly/><br /><br />
+        <input type="text" id="uploaded_by" name="uploaded_by" hidden value={{user.username}}/>
         <label for="myfile">Choose File:</label>
         <input type="file" id="myfile" name="myfile" multiple="" /><br /><br />
         <label for="myfile">Choose Folder:</label>
@@ -137,6 +140,7 @@ label{
         <li>
         <label>Document Type:</label>
         <input type="text" name="doc_type" value="Others" size="9" readonly/><br /><br />
+        <input type="text" id="uploaded_by" name="uploaded_by" hidden value={{user.username}}/>
         <label for="myfile">Choose File:</label>
         <input type="file" id="myfile" name="myfile" multiple="" /><br /><br />
         <label for="myfile">Choose Folder:</label>
