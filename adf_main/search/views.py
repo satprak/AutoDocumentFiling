@@ -6,6 +6,7 @@ from django.core import serializers
 from .models import Product
 import json
 
+#___________autocomplete fxn for providing list of suggestion words___________________________
 def autocomplete(t1,doc_type,field):
     if t1:
         t1 = t1[::-1]
@@ -18,23 +19,19 @@ def autocomplete(t1,doc_type,field):
         t2=[]
         client =  MongoClient('mongodb://localhost:27017/')
         text= text.lower()
-        print(text)
         length=len(text)
         if not length:
             return JsonResponse([], safe=False)
-        
         list1 = list(client.adf_main.adf_list.find({'doc_type':doc_type}))
         list2= list1[0][field]
-        print(list2)
         list3=[]
         for x in list2:
             if len(x['word'])>=length:
                 if x['word'][:length]==text:
                     list3.append(x['word'])
-        print(list3)
         return list3
 
-    return render(request, 'search/home.html')
+#____fxns for autocomplete for different different fields in front end________________________
 def Invoice_Company(request):
     if 'term' in request.GET:
         return JsonResponse(autocomplete(request.GET['term'],'Invoice','Company'),safe=False)
@@ -78,6 +75,7 @@ def All_keywords(request):
     if 'term' in request.GET:
         return JsonResponse(autocomplete(request.GET['term'],'All','keywords'), safe=False)
 
+#_____fxn for searching text having + - | ________________________________________
 def text_search(key_string,search_in,dic):
     temp = '*'
     current = ""
@@ -154,7 +152,7 @@ def search(request):
                 temp_main_dic = temp_main_dic1 + temp_main_dic2
                 doc1= client.adf_main.adf_frontend.find({'$and':temp_main_dic} )
                 docs.append(list(doc1))
-            #***********************changed**********************************
+            
             if len(docs)==2:#____if both header and para are selected____________
                 new_list=docs[0]
                 for x in docs[1]:
