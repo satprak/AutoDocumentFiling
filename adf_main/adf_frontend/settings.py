@@ -85,12 +85,23 @@ WSGI_APPLICATION = 'adf_frontend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'djongo',           #'django.db.backends.sqlite3',
+#         'NAME':   'adf_main',              # DB name
+#         #'USER': 'root',               # DB User name <optional>
+#     }
+# }
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'djongo',           #'django.db.backends.sqlite3',
-        'NAME':   'adf_main',              # DB name
-        #'USER': 'root',               # DB User name <optional>
-    }
+        'default': {
+            'ENGINE': 'djongo',
+            'NAME': 'adf_main',
+            'ENFORCE_SCHEMA': False,
+            'CLIENT': {
+                'host': 'mongodb+srv://analytics:analytics-password@mflix.uxx0e.mongodb.net/mflix?retryWrites=true&w=majority'
+            }  
+        }
 }
 
 

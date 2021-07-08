@@ -59,7 +59,7 @@ def comp(s):
     return tmp
 
 #.............#
-client = MongoClient('mongodb://localhost:27017/')
+client = MongoClient("mongodb+srv://analytics:analytics-password@mflix.uxx0e.mongodb.net/mflix?retryWrites=true&w=majority")
 
 def clean_text_suggestions(sentence, stopwords_list = set(stopwords.words('english')), punct = set(string.punctuation)):
         sentence = re.sub('[^a-zA-Z]', ' ', sentence)
@@ -94,7 +94,7 @@ def add_words_database(word_freq_dict,doc_type,field):
 
 def script(url, current_folder, name,keyword_front,doctype,size):
     #print("Script working ??")
-    client = MongoClient('mongodb://localhost:27017/')
+    client = MongoClient("mongodb+srv://analytics:analytics-password@mflix.uxx0e.mongodb.net/mflix?retryWrites=true&w=majority")
 
     def extract_email_info(text):        
         fh = text

@@ -17,7 +17,7 @@ def autocomplete(t1,doc_type,field):
             else:
                 text = i+text
         t2=[]
-        client =  MongoClient('mongodb://localhost:27017/')
+        client = MongoClient("mongodb+srv://analytics:analytics-password@mflix.uxx0e.mongodb.net/mflix?retryWrites=true&w=majority")
         text= text.lower()
         length=len(text)
         if not length:
@@ -134,13 +134,13 @@ def text_search(key_string,search_in,dic,s):
 
 def search(request):
     if request.method == 'POST':
-        client =  MongoClient('mongodb://localhost:27017/')
+        client = MongoClient("mongodb+srv://analytics:analytics-password@mflix.uxx0e.mongodb.net/mflix?retryWrites=true&w=majority")
         if request.POST["doc_type"] == 'Others':
             is_header = request.POST.get('header',False)
             is_para = request.POST.get('Paragraph',False)
             Header_Para = request.POST["Header_Para"]
             keyword = request.POST["keyword"]
-            client = MongoClient('mongodb://localhost:27017/')
+            client = MongoClient("mongodb+srv://analytics:analytics-password@mflix.uxx0e.mongodb.net/mflix?retryWrites=true&w=majority")
             docs=[]
             dic={}
             dic['doc_type'] = 'Others'
