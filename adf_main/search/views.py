@@ -1,19 +1,6 @@
 from django.shortcuts import render
 from pymongo import MongoClient
 import datetime
-# saty
-#hhuhedhuihui
-# this is my second change for git push
-# hello hi wassup
-# hello hi wassup2
-# hello hi wassup3
-# hello hi wassup4
-# hello hi wassup5
-# hello hi wassup6
-#this change is made de bbyy  mmee
-#new change done by me
-
-
 from django.http import JsonResponse
 from django.core import serializers
 from .models import Product
@@ -35,9 +22,22 @@ def autocomplete(t1,doc_type,field):
         length=len(text)
         if not length:
             return JsonResponse([], safe=False)
+        list1 = list(client.adf_main.adf_list.find({'doc_type':doc_type}))
+        list2= list1[0][field]
+        list3=[]
+        count =0
+        for x in list2:
+            if len(x['word'])>=length:
+                if x['word'][:length]==text:
+                    list3.append(x['word'])
+                    count+=1
+                    if count ==10:
+                        break
+        return list3
 
 #____fxns for autocomplete for different different fields in front end________________________
 def Invoice_Company(request):
+    if 'term' in request.GET:
         return JsonResponse(autocomplete(request.GET['term'],'Invoice','Company'),safe=False)
 def Invoice_keywords(request):
     if 'term' in request.GET:
