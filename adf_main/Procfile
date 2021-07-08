@@ -1,0 +1,1 @@
+web: gunicorn adf_frontend.wsgi
