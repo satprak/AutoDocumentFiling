@@ -1,26 +1,14 @@
 from django.shortcuts import render
 from pymongo import MongoClient
 import datetime
-
-# saty
-#hhuhedhuihui
-# this is my second change for git push
-# hello hi wassup
-# hello hi wassup2
-# hello hi wassup3
-# hello hi wassup4
-# hello hi wassup5
-# hello hi wassup6
-#this change is made de bbyy  mmee
-#new change done by me
-
 from django.http import JsonResponse
+from django.core import serializers
 from .models import Product
 import json
-def autocomplete(request):
-    if 'term' in request.GET:
-        text = request.GET['term']
-        t1 = request.GET['term']
+
+#___________autocomplete fxn for providing list of suggestion words___________________________
+def autocomplete(t1,doc_type,field):
+    if t1:
         t1 = t1[::-1]
         text = ""
         for i in t1:
@@ -29,6 +17,7 @@ def autocomplete(request):
             else:
                 text = i+text
         t2=[]
+<<<<<<< HEAD
         # text= text.lower()
         print(text)
         length=len(text)
@@ -37,17 +26,68 @@ def autocomplete(request):
         client =  MongoClient('mongodb://localhost:27017/')
         list1 = list(client.adf_main.adf_list.find({"doc_type":"Invoice"}))
         list2= list1[0]['content_text']
+=======
+        client =  MongoClient('mongodb://localhost:27017/')
+        text= text.lower()
+        length=len(text)
+        if not length:
+            return JsonResponse([], safe=False)
+        list1 = list(client.adf_main.adf_list.find({'doc_type':doc_type}))
+        list2= list1[0][field]
+>>>>>>> fa9cfefd7fce7a31593004dc5ad182d5a60c84b2
         list3=[]
         for x in list2:
-            if len(x)>=length:
-                if x[:length]==text:
-                    list3.append(x)
-        return JsonResponse(list3, safe=False)
+            if len(x['word'])>=length:
+                if x['word'][:length]==text:
+                    list3.append(x['word'])
+        return list3
 
-    return render(request, 'search/home.html')
+#____fxns for autocomplete for different different fields in front end________________________
+def Invoice_Company(request):
+    if 'term' in request.GET:
+        return JsonResponse(autocomplete(request.GET['term'],'Invoice','Company'),safe=False)
+def Invoice_keywords(request):
+    if 'term' in request.GET:
+        return JsonResponse(autocomplete(request.GET['term'],'Invoice','keywords'), safe=False)
+def Invoice_full_text(request):
+    if 'term' in request.GET:
+        return JsonResponse(autocomplete(request.GET['term'],'Invoice','full_text'), safe=False)
+def Email_From(request):
+    if 'term' in request.GET:
+        return JsonResponse(autocomplete(request.GET['term'],'Email','From'), safe=False)
+def Email_To(request):
+    if 'term' in request.GET:
+        return JsonResponse(autocomplete(request.GET['term'],'Email','To'), safe=False)
+def Email_keywords(request):
+    if 'term' in request.GET:
+        return JsonResponse(autocomplete(request.GET['term'],'Email','keywords'), safe=False)
+def Email_Body(request):
+    if 'term' in request.GET:
+        return JsonResponse(autocomplete(request.GET['term'],'Email','Body'), safe=False)
+def Email_Subject(request):
+    if 'term' in request.GET:
+        return JsonResponse(autocomplete(request.GET['term'],'Email','Subject'), safe=False)
+def Email_Attachments(request):
+    if 'term' in request.GET:
+        return JsonResponse(autocomplete(request.GET['term'],'Email','Attachments'), safe=False)
+def Others_keywords(request):
+    if 'term' in request.GET:
+        return JsonResponse(autocomplete(request.GET['term'],'Others','keywords'), safe=False)
+def Others_full_text(request):
+    if 'term' in request.GET:
+        return JsonResponse(autocomplete(request.GET['term'],'Others','full_text'), safe=False)
+def All_file_name(request):
+    if 'term' in request.GET:
+        return JsonResponse(autocomplete(request.GET['term'],'All','file_name'), safe=False)
+def All_full_text(request):
+    if 'term' in request.GET:
+        return JsonResponse(autocomplete(request.GET['term'],'All','full_text'), safe=False)
+def All_keywords(request):
+    if 'term' in request.GET:
+        return JsonResponse(autocomplete(request.GET['term'],'All','keywords'), safe=False)
 
+#_____fxn for searching text having + - | ________________________________________
 def text_search(key_string,search_in,dic):
-    
     temp = '*'
     current = ""
     and_list=[]
@@ -123,7 +163,7 @@ def search(request):
                 temp_main_dic = temp_main_dic1 + temp_main_dic2
                 doc1= client.adf_main.adf_frontend.find({'$and':temp_main_dic} )
                 docs.append(list(doc1))
-            #***********************changed**********************************
+            
             if len(docs)==2:#____if both header and para are selected____________
                 new_list=docs[0]
                 for x in docs[1]:
