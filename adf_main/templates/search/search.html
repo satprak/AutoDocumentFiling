@@ -108,6 +108,8 @@
           <input type="text" name="keyword" placeholder="Keyword" id="keyword" /><br /><br />
           <label>FullText:</label>
           <input type="text" name="full" id="full"><br /><br />
+          <label>Uploaded By:</label>
+          <input type="text" name="uploaded_by" id="uploaded_by"/><br /><br />
           <button type="submit" class="submitbtn">Submit</button><br>
           <button type="reset" class="submitbtn">Reset</button><br /><br />
           <a href="{% url 'users:user_home' %}">
@@ -237,6 +239,43 @@
             }
           });
           
+          $("#uploaded_by")
+          // don't navigate away from the field on tab when selecting an item
+          .on("keydown", function (event) {
+            if (event.keyCode === $.ui.keyCode.TAB &&
+              $(this).autocomplete("instance").menu.active) {
+              event.preventDefault();
+            }
+          })
+          .autocomplete({
+            minLength: 0,
+            source: "{% url 'Invoice_uploaded_by' %}",
+            focus: function () {
+              // prevent value inserted on focus
+              return false;
+            },
+            select: function (event, ui) {
+              // var terms = split( this.value );
+              // console.log(this.value);
+              // console.log(typeof this.value)
+              var cur = this.value;
+              console.log(cur)
+              var index;
+              for (let i = cur.length - 1; i >= 0; i--) {
+                if (cur[i] == '+' || cur[i] == '-' || cur[i] == '|') {
+                  index = i;
+                  break;
+                }
+              }
+              cur = cur.slice(0, index + 1);
+              // console.log(typeof cur);
+              for (let i = 0; i < ui.item.value.length; i++) {
+                cur = cur + ui.item.value[i];
+              }
+              this.value = cur
+              return false;
+            }
+          });
       });
     </script>
 
@@ -271,6 +310,8 @@
           <input type="date" name="Start_Date" /><br /><br />
           <label>End_Date:</label>
           <input type="date" name="End_Date" /><br /><br />
+          <label>Uploaded By:</label>
+          <input type="text" name="uploaded_by" id="uploaded_by"/><br /><br />
           <button type="submit" class="submitbtn">Submit</button><br>
           <button type="reset" class="submitbtn">Reset</button><br /><br />
           <a href="{% url 'users:user_home' %}">
@@ -362,6 +403,43 @@
             }
           });
 
+          $("#uploaded_by")
+          // don't navigate away from the field on tab when selecting an item
+          .on("keydown", function (event) {
+            if (event.keyCode === $.ui.keyCode.TAB &&
+              $(this).autocomplete("instance").menu.active) {
+              event.preventDefault();
+            }
+          })
+          .autocomplete({
+            minLength: 0,
+            source: "{% url 'Email_uploaded_by' %}",
+            focus: function () {
+              // prevent value inserted on focus
+              return false;
+            },
+            select: function (event, ui) {
+              // var terms = split( this.value );
+              // console.log(this.value);
+              // console.log(typeof this.value)
+              var cur = this.value;
+              console.log(cur)
+              var index;
+              for (let i = cur.length - 1; i >= 0; i--) {
+                if (cur[i] == '+' || cur[i] == '-' || cur[i] == '|') {
+                  index = i;
+                  break;
+                }
+              }
+              cur = cur.slice(0, index + 1);
+              // console.log(typeof cur);
+              for (let i = 0; i < ui.item.value.length; i++) {
+                cur = cur + ui.item.value[i];
+              }
+              this.value = cur
+              return false;
+            }
+          });
 
           $("#Subject")
           // don't navigate away from the field on tab when selecting an item
@@ -540,6 +618,8 @@
           <input type="checkbox" id="Paragraph" name="Paragraph" />Paragraph<br /><br />
           <label>Keyword:</label>
           <input type="text" name="keyword" placeholder="Keyword" id="keyword" /><br /><br />
+          <label>Uploaded By:</label>
+          <input type="text" name="uploaded_by" id="uploaded_by"/><br /><br />
           <button type="submit" class="submitbtn">Submit</button><br>
           <button type="reset" class="submitbtn">Reset</button><br /><br />
           <a href="{% url 'users:user_home' %}">
@@ -593,6 +673,44 @@
             }
           });
 
+          $("#uploaded_by")
+          // don't navigate away from the field on tab when selecting an item
+          .on("keydown", function (event) {
+            if (event.keyCode === $.ui.keyCode.TAB &&
+              $(this).autocomplete("instance").menu.active) {
+              event.preventDefault();
+            }
+          })
+          .autocomplete({
+            minLength: 0,
+            source: "{% url 'Others_uploaded_by' %}",
+            focus: function () {
+              // prevent value inserted on focus
+              return false;
+            },
+            select: function (event, ui) {
+              // var terms = split( this.value );
+              // console.log(this.value);
+              // console.log(typeof this.value)
+              var cur = this.value;
+              console.log(cur)
+              var index;
+              for (let i = cur.length - 1; i >= 0; i--) {
+                if (cur[i] == '+' || cur[i] == '-' || cur[i] == '|') {
+                  index = i;
+                  break;
+                }
+              }
+              cur = cur.slice(0, index + 1);
+              // console.log(typeof cur);
+              for (let i = 0; i < ui.item.value.length; i++) {
+                cur = cur + ui.item.value[i];
+              }
+              this.value = cur
+              return false;
+            }
+          });
+          
           $("#Header_Para")
           // don't navigate away from the field on tab when selecting an item
           .on("keydown", function (event) {
@@ -653,6 +771,8 @@
           <input type="text" name="content_text" id="content_text"/><br /><br />
           <label>File Name:</label>
           <input type="text" name="file_name" id="file_name"/><br /><br />
+          <label>Uploaded By:</label>
+          <input type="text" name="uploaded_by" id="uploaded_by"/><br /><br />
           <button type="submit" class="submitbtn">Submit</button><br>
           <button type="reset" class="submitbtn">Reset</button><br /><br />
           <a href="{% url 'users:user_home' %}">
@@ -679,6 +799,44 @@
           .autocomplete({
             minLength: 3,
             source: "{% url 'All_keywords' %}",
+            focus: function () {
+              // prevent value inserted on focus
+              return false;
+            },
+            select: function (event, ui) {
+              // var terms = split( this.value );
+              // console.log(this.value);
+              // console.log(typeof this.value)
+              var cur = this.value;
+              console.log(cur)
+              var index;
+              for (let i = cur.length - 1; i >= 0; i--) {
+                if (cur[i] == '+' || cur[i] == '-' || cur[i] == '|') {
+                  index = i;
+                  break;
+                }
+              }
+              cur = cur.slice(0, index + 1);
+              // console.log(typeof cur);
+              for (let i = 0; i < ui.item.value.length; i++) {
+                cur = cur + ui.item.value[i];
+              }
+              this.value = cur
+              return false;
+            }
+          });
+          
+          $("#uploaded_by")
+          // don't navigate away from the field on tab when selecting an item
+          .on("keydown", function (event) {
+            if (event.keyCode === $.ui.keyCode.TAB &&
+              $(this).autocomplete("instance").menu.active) {
+              event.preventDefault();
+            }
+          })
+          .autocomplete({
+            minLength: 0,
+            source: "{% url 'All_uploaded_by' %}",
             focus: function () {
               // prevent value inserted on focus
               return false;

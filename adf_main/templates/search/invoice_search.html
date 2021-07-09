@@ -14,10 +14,12 @@
 
 <table class="table table-stripped&sortable">
     <th>Document Name</th>
-    <th>Document Path</th>
+    <th>Document</th>
     <th>Total Amount</th>
     <th>Company</th>
     <th>Date</th>
+    <th>Size</th>
+    <th>Uploaded By:</th>
      {% for doc in docs.main %}  
        <tr> 
         <td> {{doc.file_name}} </td>
@@ -25,6 +27,8 @@
         <td> {{doc.amount}} </td>
         <td> {{doc.issuer}} </td>
         <td> {{doc.date}} </td>
+        <td> {{doc.Size}} </td>
+        <td> {{doc.uploaded_by}} </td>
        </tr> 
     {% endfor %}  
     

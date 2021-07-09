@@ -13,11 +13,13 @@
 <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
 
 <table class="table table-stripped&sortable">
-    <th>document name:</th>
-    <th>document link:</th>
+    <th>Document Name:</th>
+    <th>Document:</th>
     <th>To:</th>
     <th>From:</th>
     <th>Date:</th>
+    <th>Size:</th>
+    <th>Uploaded By:</th>
      {% for doc in docs.main %}  
        <tr> 
         <td> {{doc.file_name}} </td>
@@ -25,6 +27,8 @@
         <td> {{doc.To}}</td>
         <td> {{doc.From}}</td>
         <td> {{doc.date}}</td>
+        <td> {{doc.Size}}</td>
+        <td> {{doc.uploaded_by}}</td>
        </tr> 
     {% endfor %}
        

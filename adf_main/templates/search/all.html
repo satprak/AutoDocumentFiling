@@ -35,10 +35,11 @@
 <script type="text/javascript" src="../sort-table.js"></script>
 
 <table class="table table-stripped js-sort-table sortable" id = "demo1">
-    <th>document name:</th>
-    <th>document link:</th>
+    <th>Document Name:</th>
+    <th>Document:</th>
     <th>Document Type:</th>
     <th>File Size:</th>
+    <th>Uploaded By:</th>
      {% for doc in docs.main %} 
        <tr> 
         <td> {{doc.file_name}} </td>
@@ -53,6 +54,7 @@
         {% endif %}
         <td> {{doc.doc_type}} </td>
         <td> {{doc.Size}} </td>
+        <td> {{doc.uploaded_by}} </td>
        </tr> 
     {% endfor %}
 </table>
