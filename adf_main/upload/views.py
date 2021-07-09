@@ -19,7 +19,9 @@ import django
 import numpy as np
 import datetime
 import string
-
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
@@ -686,6 +688,12 @@ def Update(request):
         BASE_DIR = "media/"
         # BASE_DIR = "G:/django_projects/git_satyam_adf/AutoDocumentFiling/adf_main/media/"
         #BASE_DIR = "C:/Users/Priyanshu Agarwal/projects/AutoDocumentFiling/adf_main/media/"
+        cloudinary.uploader.upload(files = request.FILES.getlist('myfile'), 
+        folder = "media/", 
+        public_id = "pdf",
+        overwrite = "true", 
+        notification_url = "https://mysite.example.com/notify_endpoint", 
+        resource_type = "document")
         list=os.listdir(BASE_DIR)
         new_list = []
         for x in list:
