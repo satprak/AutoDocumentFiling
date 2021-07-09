@@ -691,8 +691,8 @@ def script(url, current_folder, name,keyword_front,doctype,size,uploaded_by):
 def Update(request):
     #context={}
     if request.method == 'POST':
-        #BASE_DIR = "c:/Users/hp/Downloads/project2/project2/adf_main/media/"
-        BASE_DIR = "G:/django_projects/git_satyam_adf/AutoDocumentFiling/adf_main/media/"
+        BASE_DIR = "c:/Users/hp/Downloads/project2/project2/adf_main/media/"
+        # BASE_DIR = "G:/django_projects/git_satyam_adf/AutoDocumentFiling/adf_main/media/"
         #BASE_DIR = "C:/Users/Priyanshu Agarwal/projects/AutoDocumentFiling/adf_main/media/"
         uploaded_by =  request.user.username
         uploaded_by = uploaded_by.lower()
