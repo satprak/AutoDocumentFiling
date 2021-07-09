@@ -183,13 +183,15 @@ def search(request):
                 docs=new_list
             
             if len(docs)==0:#____if neither header nor para are selected____________
-                temp = text_search(keyword,'keywords',dic)
+                temp = text_search(keyword,'keywords',dic,s)
                 temp_main_dic = temp[0:-1]
                 s=temp[-1]
                 doc1 = client.adf_main.adf_frontend.find({'$and':temp_main_dic})
                 docs=doc1
-            docs["to_search"]=s
-            return render(request, 'search/others.html', {'docs':docs})
+            docs1={}
+            docs1['main'] = docs
+            docs1["to_search"]=s
+            return render(request, 'search/others.html', {'docs':docs1})
 
         elif request.POST["doc_type"] == 'Email':
             df = client.adf_main.adf_frontend
