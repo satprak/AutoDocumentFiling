@@ -18,10 +18,10 @@
     <th>Total Amount</th>
     <th>Company</th>
     <th>Date</th>
-     {% for doc in docs %}  
+     {% for doc in docs.main %}  
        <tr> 
         <td> {{doc.file_name}} </td>
-        <td> <a href="{{MEDIA_URL}}{{doc.file_path}}/{{doc.file_name}}">Link</td>
+        <td> <a href="{{MEDIA_URL}}{{doc.file_path}}/{{doc.file_name}}#search={{docs.to_search}}">Link</td>
         <td> {{doc.amount}} </td>
         <td> {{doc.issuer}} </td>
         <td> {{doc.date}} </td>
