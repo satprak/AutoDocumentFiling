@@ -27,9 +27,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'syvjpg(n7mdg(e3qz4%(z&%k&)+t@m)kt0c80@1827ppcew&-3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-
-ALLOWED_HOSTS = ['*']
+DEBUG = True
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'www.mysite.com']
+#ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'users',
     'upload',
     'search',
-
+    # 'gdstorage'
     
 ]
 
@@ -158,3 +158,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 #............#
 CORS_ORIGIN_ALLOW_ALL = True
+
+#
+# Google Drive Storage Settings
+#
+
+# GOOGLE_DRIVE_STORAGE_JSON_KEY_FILE = '<path to your json private key file>'
+# GOOGLE_DRIVE_STORAGE_MEDIA_ROOT = '<base google drive path for file uploads>' # OPTIONAL

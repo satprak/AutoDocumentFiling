@@ -21,7 +21,7 @@ from adf_frontend import settings
 
 urlpatterns = [
     
-    path('admin/', admin.site.urls),
+    path('', admin.site.urls),
     #path('', include('users.urls')),
     path('user/', include('users.urls')),
     path('accounts/', include('django.contrib.auth.urls')), 

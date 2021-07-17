@@ -15,17 +15,16 @@
 <table class="table table-stripped&sortable">
     <th>Document Name</th>
     <th>Document </th>
-    <th>Page No.</th>
-    <th>Size:</th>
     <th>Uploaded By:</th>
-    
+    <th>Uploaded Date:</th>
+    <th>Page No.</th>
      {% for doc in docs.main %}  
        <tr> 
         <td> {{doc.file_name}} </td>
         <td> <a href="{{MEDIA_URL}}{{doc.file_path}}/{{doc.file_name}}#page={{doc.page_number}}#search={{docs.to_search}}">Link</td>
-        <td> {{doc.page_number}}</td>
-        <td> {{doc.Size}}</td>
         <td> {{doc.uploaded_by}}</td>
+        <td> {{doc.uploaded_date}}</td>
+        <td> {{doc.page_number}}</td>
        </tr> 
        {% endfor %}
     

@@ -15,20 +15,20 @@
 <table class="table table-stripped&sortable">
     <th>Document Name:</th>
     <th>Document:</th>
+    <th>Uploaded By:</th>
+    <th>Uploaded Date:</th>
     <th>To:</th>
     <th>From:</th>
     <th>Date:</th>
-    <th>Size:</th>
-    <th>Uploaded By:</th>
      {% for doc in docs.main %}  
        <tr> 
         <td> {{doc.file_name}} </td>
         <td> <a href="{{MEDIA_URL}}{{doc.file_path}}/{{doc.file_name}}#search={{docs.to_search}}">Link</td>
+        <td> {{doc.uploaded_by}}</td>
+        <td> {{doc.uploaded_date}}</td>
         <td> {{doc.To}}</td>
         <td> {{doc.From}}</td>
         <td> {{doc.date}}</td>
-        <td> {{doc.Size}}</td>
-        <td> {{doc.uploaded_by}}</td>
        </tr> 
     {% endfor %}
        

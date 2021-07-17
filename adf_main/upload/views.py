@@ -551,7 +551,8 @@ def script(url, current_folder, name,keyword_front,doctype,size,uploaded_by):
             text = convert(file_path)
             content_text = " ".join(text.split())
             mydict = {"doc_type":"Email", "file_name": file_name, "file_path": current_folder,"content_text": content_text}
-            
+            mydict['uploaded_date'] = datetime.datetime.now()
+
             full_text_email = clean_text_suggestions(content_text)
             full_text_email = pandas.Series(full_text_email.split()).value_counts()
             full_text_email = full_text_email.to_dict()
@@ -621,6 +622,7 @@ def script(url, current_folder, name,keyword_front,doctype,size,uploaded_by):
                     text = output.getvalue()
                     content_text = " ".join(text.split())
                     mydict = {"doc_type":"Others", "file_name": file_name, "file_path": current_folder,"content_text": content_text, "page_number": page_no+1}
+                    mydict['uploaded_date'] = datetime.datetime.now()
                     
                     full_text_all = clean_text_suggestions(content_text)
                     full_text_all = pandas.Series(full_text_all.split()).value_counts()
@@ -691,9 +693,9 @@ def script(url, current_folder, name,keyword_front,doctype,size,uploaded_by):
 def Update(request):
     #context={}
     if request.method == 'POST':
-        BASE_DIR = "c:/Users/hp/Downloads/project2/project2/adf_main/media/"
-        # BASE_DIR = "G:/django_projects/git_satyam_adf/AutoDocumentFiling/adf_main/media/"
-        #BASE_DIR = "C:/Users/Priyanshu Agarwal/projects/AutoDocumentFiling/adf_main/media/"
+        #BASE_DIR = "c:/Users/hp/Downloads/project2/project2/adf_main/media/"
+        #BASE_DIR = "G:/django_projects/git_satyam_adf/AutoDocumentFiling/adf_main/media/"
+        BASE_DIR = "C:/Users/Priyanshu Agarwal/projects/AutoDocumentFiling/adf_main/media/"
         uploaded_by =  request.user.username
         uploaded_by = uploaded_by.lower()
         list=os.listdir(BASE_DIR)
@@ -807,6 +809,7 @@ def Update(request):
                     mydict1['keywords'] = keyword_front
                     mydict1['Size'] = size
                     mydict1['uploaded_by'] = uploaded_by
+                    mydict1['uploaded_date'] = datetime.datetime.now()
 
                     uploaded_list = [uploaded_by]
                     counts = Counter(uploaded_list)
@@ -842,6 +845,8 @@ def Update(request):
                     mydict1['keywords'] = keyword_front
                     mydict1['keywords'] = keyword_front
                     mydict1['uploaded_by'] = uploaded_by
+                    mydict1['uploaded_date'] = datetime.datetime.now()
+
                     uploaded_list = [uploaded_by]
                     counts = Counter(uploaded_list)
                     add_words_database(counts,"Invoice","uploaded_by")
@@ -877,6 +882,8 @@ def Update(request):
                     mydict1['content_text'] = " ".join(fh.split())
                     mydict1['keywords'] = keyword_front
                     mydict1['uploaded_by'] = uploaded_by
+                    mydict1['uploaded_date'] = datetime.datetime.now()
+
                     uploaded_list = [uploaded_by]
                     counts = Counter(uploaded_list)
                     add_words_database(counts,"Invoice","uploaded_by")

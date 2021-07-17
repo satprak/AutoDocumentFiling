@@ -37,9 +37,10 @@
 <table class="table table-stripped js-sort-table sortable" id = "demo1">
     <th>Document Name:</th>
     <th>Document:</th>
+    <th>Uploaded By:</th>
+    <th>Uploaded Date:</th>
     <th>Document Type:</th>
     <th>File Size:</th>
-    <th>Uploaded By:</th>
      {% for doc in docs.main %} 
        <tr> 
         <td> {{doc.file_name}} </td>
@@ -52,9 +53,10 @@
             <a href="{{MEDIA_URL}}{{doc.file_path}}/{{doc.file_name}}#search={{docs.to_search}}">Link
         </td>
         {% endif %}
+        <td> {{doc.uploaded_by}}</td>
+        <td> {{doc.uploaded_date}}</td>
         <td> {{doc.doc_type}} </td>
         <td> {{doc.Size}} </td>
-        <td> {{doc.uploaded_by}} </td>
        </tr> 
     {% endfor %}
 </table>

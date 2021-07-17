@@ -170,7 +170,20 @@ def search(request):
                 uploaded_by = request.POST['uploaded_by']
                 if uploaded_by:
                     temp_main_dic3 = {'$and':[dic,{'uploaded_by': { '$regex': uploaded_by, '$options': 'i' } }]}
-                temp_main_dic = temp_main_dic1 + temp_main_dic2 + temp_main_dic3
+                #____________uploaded_date_______________________________
+                uploaded_start_date = request.POST["uploaded_start_date"]
+                uploaded_end_date = request.POST["uploaded_end_date"]
+                if(uploaded_start_date):
+                    uploaded_start_date = datetime.datetime.strptime(uploaded_start_date, '%Y-%m-%d')
+                else:
+                    uploaded_start_date = datetime.datetime(1500, 5, 17)
+                if(uploaded_end_date):
+                    uploaded_end_date = datetime.datetime.strptime(uploaded_end_date, '%Y-%m-%d')
+                else:
+                    uploaded_end_date = datetime.datetime.now()
+                dic_date = {'$and':[{'uploaded_date':{'$gt':uploaded_start_date}},{'uploaded_date':{'$lt':uploaded_end_date}}]}
+
+                temp_main_dic = temp_main_dic1 + temp_main_dic2 + temp_main_dic3 + dic_date
                 doc1= client.adf_main.adf_frontend.find({'$and':temp_main_dic} )
                 docs.append(list(doc1))
 # ********************paragraph selected************
@@ -185,7 +198,19 @@ def search(request):
                 uploaded_by = request.POST['uploaded_by']
                 if uploaded_by:
                     temp_main_dic3 = {'$and':[dic,{'uploaded_by': { '$regex': uploaded_by, '$options': 'i' } }]}
-                temp_main_dic = temp_main_dic1 + temp_main_dic2 + temp_main_dic3
+                #____________uploaded_date_______________________________
+                uploaded_start_date = request.POST["uploaded_start_date"]
+                uploaded_end_date = request.POST["uploaded_end_date"]
+                if(uploaded_start_date):
+                    uploaded_start_date = datetime.datetime.strptime(uploaded_start_date, '%Y-%m-%d')
+                else:
+                    uploaded_start_date = datetime.datetime(1500, 5, 17)
+                if(uploaded_end_date):
+                    uploaded_end_date = datetime.datetime.strptime(uploaded_end_date, '%Y-%m-%d')
+                else:
+                    uploaded_end_date = datetime.datetime.now()
+                dic_date = {'$and':[{'uploaded_date':{'$gt':uploaded_start_date}},{'uploaded_date':{'$lt':uploaded_end_date}}]}
+                temp_main_dic = temp_main_dic1 + temp_main_dic2 + temp_main_dic3 + dic_date
                 doc1= client.adf_main.adf_frontend.find({'$and':temp_main_dic} )
                 docs.append(list(doc1))
             
@@ -231,6 +256,20 @@ def search(request):
                 in_end_date = datetime.datetime.now()
             
             main_dic=[]
+
+            #____________uploaded_date_______________________________
+            uploaded_start_date = request.POST["uploaded_start_date"]
+            uploaded_end_date = request.POST["uploaded_end_date"]
+            if(uploaded_start_date):
+                uploaded_start_date = datetime.datetime.strptime(uploaded_start_date, '%Y-%m-%d')
+            else:
+                uploaded_start_date = datetime.datetime(1500, 5, 17)
+            if(uploaded_end_date):
+                uploaded_end_date = datetime.datetime.strptime(uploaded_end_date, '%Y-%m-%d')
+            else:
+                uploaded_end_date = datetime.datetime.now()
+            dic_date = {'$and':[{'uploaded_date':{'$gt':uploaded_start_date}},{'uploaded_date':{'$lt':uploaded_end_date}}]}
+            main_dic.append(dic_date)
             #  ******* -------  To: -----*******
             to_string = request.POST["To"]   # psenwar@gmail.com+satyamprakashiitk2022@gmail.com
             dic={}
@@ -322,9 +361,23 @@ def search(request):
                 in_end_date = datetime.datetime.strptime(in_end_date, '%Y-%m-%d')
             else:
                 in_end_date = datetime.datetime.now()
+
             dic={}
             dic['doc_type'] = 'Invoice'
             main_dic = []
+            #____________uploaded_date_______________________________
+            uploaded_start_date = request.POST["uploaded_start_date"]
+            uploaded_end_date = request.POST["uploaded_end_date"]
+            if(uploaded_start_date):
+                uploaded_start_date = datetime.datetime.strptime(uploaded_start_date, '%Y-%m-%d')
+            else:
+                uploaded_start_date = datetime.datetime(1500, 5, 17)
+            if(uploaded_end_date):
+                uploaded_end_date = datetime.datetime.strptime(uploaded_end_date, '%Y-%m-%d')
+            else:
+                uploaded_end_date = datetime.datetime.now()
+            dic_date = {'$and':[{'uploaded_date':{'$gt':uploaded_start_date}},{'uploaded_date':{'$lt':uploaded_end_date}}]}
+            main_dic.append(dic_date)
             #_________________company___________________________
             company = request.POST['com']
             temp_main_dic = text_search(company,'issuer',dic,s)
@@ -399,6 +452,21 @@ def search(request):
             if uploaded_by:
                 temp_main_dic = {'uploaded_by': { '$regex': uploaded_by, '$options': 'i' } }
                 main_dic.append(temp_main_dic)
+
+                        #____________uploaded_date_______________________________
+            uploaded_start_date = request.POST["uploaded_start_date"]
+            uploaded_end_date = request.POST["uploaded_end_date"]
+            if(uploaded_start_date):
+                uploaded_start_date = datetime.datetime.strptime(uploaded_start_date, '%Y-%m-%d')
+            else:
+                uploaded_start_date = datetime.datetime(1500, 5, 17)
+            if(uploaded_end_date):
+                uploaded_end_date = datetime.datetime.strptime(uploaded_end_date, '%Y-%m-%d')
+            else:
+                uploaded_end_date = datetime.datetime.now()
+            dic_date = {'$and':[{'uploaded_date':{'$gt':uploaded_start_date}},{'uploaded_date':{'$lt':uploaded_end_date}}]}
+            main_dic.append(dic_date)
+            
             #---** ---- searching in file_name ---**  
             to_string = request.POST["file_name"]   
             temp_main_dic = text_search(to_string,'file_name',dic,s)
